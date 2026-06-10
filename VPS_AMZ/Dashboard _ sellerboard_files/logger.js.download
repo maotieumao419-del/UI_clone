@@ -1,0 +1,1 @@
+window.handleServerError=function(a,n,t,d){var i={};i.type=a,i.data=JSON.stringify({action:n,callback:t,data:d}),i[window.CSRF_TOKEN_KEY]=window.CSRF_TOKEN,$.ajax({url:"/en/index/log",data:i,type:"post"})};

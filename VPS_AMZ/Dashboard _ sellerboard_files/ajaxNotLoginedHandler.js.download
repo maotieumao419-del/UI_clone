@@ -1,0 +1,1 @@
+$(document).ajaxComplete(function(o,e,n){e&&e.responseJSON&&e.responseJSON.error&&"not_logined"===e.responseJSON.error&&(alert(window.GLOBAL_TRANSLATIONS.notLogined),window.location.reload())});

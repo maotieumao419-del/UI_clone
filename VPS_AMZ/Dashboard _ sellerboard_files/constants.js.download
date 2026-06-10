@@ -1,0 +1,1 @@
+window.BROWSER_LANG=navigator.language||navigator.browserLanguage,window.CONFIRM_CLICK=!1,window.CONFIRM_CLICK_PROMISE=null,window.TIMESTAMP=Date.now();

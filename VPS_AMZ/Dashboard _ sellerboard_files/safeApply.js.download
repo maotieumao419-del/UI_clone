@@ -1,0 +1,1 @@
+window.$scopeSafeApply=function(p){var o=this.$root.$$phase;"$apply"===o||"$digest"===o?p&&"function"==typeof p&&p():this.$apply(p)};

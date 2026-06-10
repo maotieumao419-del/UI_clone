@@ -1,0 +1,8 @@
+
+=== spCampaigns → LỖI: 403 Client Error: Forbidden for url: https://advertising-api.amazon.com/reporting/reports/schema/sponsored_products/spCampaigns ===
+
+=== spAdvertisedProduct → LỖI: 403 Client Error: Forbidden for url: https://advertising-api.amazon.com/reporting/reports/schema/sponsored_products/spAdvertisedProduct ===
+
+=== sbCampaigns → LỖI: 403 Client Error: Forbidden for url: https://advertising-api.amazon.com/reporting/reports/schema/sponsored_brands/sbCampaigns ===
+
+=== sdCampaigns → LỖI: 403 Client Error: Forbidden for url: https://advertising-api.amazon.com/reporting/reports/schema/sponsored_display/sdCampaigns ===

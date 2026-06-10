@@ -1,0 +1,35 @@
+============================================================
+FINANCE SUMMARY — 2026-06-08T18:55:30Z → None
+============================================================
+
+── SHIPMENT EVENTS (đơn bình thường) ──
+  Tổng đơn:              49
+  Principal (Sales):     $    555.88
+  FBA Fulfillment fee:   $   -166.77
+  Referral fee:          $    -91.42
+
+── REFUND EVENTS (trả hàng) ──
+  Tổng return:                1
+  Refunded amount:            $     -8.98
+  Refund commission:          $      1.49
+  Refunded referral fee (+):  $     -0.30  ← DƯƠNG, Amazon hoàn lại
+  Refund cost (tổng):         $     -7.79
+
+── ADJUSTMENT EVENTS (điều chỉnh) ──
+  WAREHOUSE_DAMAGE                         $      4.30
+
+── SERVICE FEE EVENTS ──
+  FBACustomerReturnPerUnitFee              $      0.00
+  FBADisposalFee                           $     -1.68
+  FBAInboundConvenienceFee                 $      0.00
+
+────────────────────────────────────────────────────────────
+TỔNG AMAZON FEES (giống Sellerboard):
+  FBA fulfillment:  $   -166.77
+  Referral:         $    -91.42
+  Adjustments:      $      4.30
+  Service fees:     $     -1.68
+  ── TỔNG ──        $   -255.57
+
+  REFUND COST:      $     -7.79
+  SALES (Principal):$    555.88

@@ -1,0 +1,34 @@
+# Triển khai SellerVision bằng Docker Compose.
+# Dùng: docker compose up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: ./backend/.env          # nạp SECRET_KEY, CORS_ORIGINS, DATABASE_URL...
+    environment:
+      PORT: "8000"
+      WEB_CONCURRENCY: "2"
+    ports:
+      - "8000:8000"                   # đổi thành "127.0.0.1:8000:8000" nếu đặt sau nginx
+    volumes:
+      - ppc_data:/app/backend/data    # file PPC upload được giữ lại khi restart
+      - db_data:/app/backend/db       # nếu dùng SQLite, đặt DATABASE_URL=sqlite:////app/backend/db/sellervision.db
+    # depends_on: [db]                # bật khi dùng PostgreSQL bên dưới
+
+  # --- (Tuỳ chọn) PostgreSQL cho production nhiều worker ---
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: sellervision
+  #     POSTGRES_PASSWORD: change_me
+  #     POSTGRES_DB: sellervision
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   # Khi bật: đặt trong backend/.env
+  #   #   DATABASE_URL=postgresql+psycopg://sellervision:change_me@db:5432/sellervision
+
+volumes:
+  ppc_data:
+  db_data:
+  # pg_data:

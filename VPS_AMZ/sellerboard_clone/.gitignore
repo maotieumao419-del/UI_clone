@@ -1,0 +1,17 @@
+# Bí mật & môi trường
+.env
+backend/.env
+
+# Python
+**/.venv/
+**/__pycache__/
+*.pyc
+
+# CSDL & dữ liệu upload (giữ thư mục, bỏ nội dung)
+*.db
+backend/data/ppc/*
+!backend/data/ppc/.gitkeep
+
+# Tạm
+backend/_*.py
+backend/_*.json

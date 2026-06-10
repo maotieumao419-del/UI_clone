@@ -1,0 +1,21 @@
+# systemd service chạy SellerVision như dịch vụ nền trên VPS Linux (không dùng Docker).
+# Đặt tại /etc/systemd/system/sellervision.service
+# Sau đó: sudo systemctl daemon-reload && sudo systemctl enable --now sellervision
+
+[Unit]
+Description=SellerVision API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/sellervision/backend
+EnvironmentFile=/var/www/sellervision/backend/.env
+ExecStart=/var/www/sellervision/backend/.venv/bin/gunicorn app.main:app \
+    -k uvicorn.workers.UvicornWorker -b 127.0.0.1:8000 \
+    --workers 2 --timeout 120 --forwarded-allow-ips=*
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

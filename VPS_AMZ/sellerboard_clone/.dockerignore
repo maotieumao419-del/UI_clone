@@ -1,0 +1,11 @@
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.db
+backend/data/ppc/*
+!backend/data/ppc/.gitkeep
+.git
+.gitignore
+*.md
+node_modules
+.env

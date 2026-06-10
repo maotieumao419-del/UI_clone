@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SellerVision</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .nav-item.active { background:#eef2ff; color:#4338ca; font-weight:600; }
+    ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+    .dash-tab.active { background:#eef2ff; color:#4338ca; font-weight:600; }
+    .period-tile { transition: box-shadow .15s; }
+    .period-tile:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+  <div id="auth-screen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white shadow-xl rounded-2xl w-full max-w-md p-8">
+      <div class="flex items-center gap-2 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white grid place-items-center font-bold text-lg">SV</div>
+        <div><h1 class="text-xl font-bold">SellerVision</h1><p class="text-xs text-slate-500">Phân tích lợi nhuận Amazon</p></div>
+      </div>
+      <div id="auth-error" class="hidden mb-3 text-sm text-red-600 bg-red-50 px-3 py-2 rounded"></div>
+      <div class="space-y-3">
+        <input id="login-email" type="email" placeholder="Email" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" />
+        <input id="login-password" type="password" placeholder="Mật khẩu" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" />
+        <button onclick="App.login()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium">Đăng nhập</button>
+      </div>
+    </div>
+  </div>
+  <div id="app" class="hidden min-h-screen flex">
+    <aside class="w-56 bg-white border-r border-slate-200 flex flex-col fixed h-full z-20">
+      <div class="flex items-center gap-2 px-4 h-14 border-b border-slate-200">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white grid place-items-center font-bold text-sm">SV</div>
+        <span class="font-bold text-sm">SellerVision</span>
+      </div>
+      <nav class="flex-1 p-2 space-y-0.5 text-sm overflow-y-auto">
+        <a onclick="App.go('dashboard')" data-page="dashboard" class="nav-item active flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer">📊 Tổng quan</a>
+        <a onclick="App.go('products')" data-page="products" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">📦 Sản phẩm</a>
+        <a onclick="App.go('inventory')" data-page="inventory" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🚚 Nhập hàng</a>
+        <a onclick="App.go('bsr')" data-page="bsr" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">📈 BSR &amp; LTV</a>
+        <a onclick="App.go('alerts')" data-page="alerts" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🔔 Cảnh báo <span id="alert-badge" class="hidden ml-auto bg-red-500 text-white text-xs px-1.5 rounded-full"></span></a>
+        <a onclick="App.go('reimburse')" data-page="reimburse" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">💰 Bồi thường</a>
+        <a onclick="App.go('ppc')" data-page="ppc" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🎯 PPC_LHHKMT</a>
+        <a onclick="App.go('ads')" data-page="ads" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">📣 Amazon Ads</a>
+        <a onclick="App.go('ethics')" data-page="ethics" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🛡️ Quyền riêng tư</a>
+      </nav>
+      <div class="p-3 border-t border-slate-200">
+        <button onclick="App.logout()" class="w-full text-sm text-slate-500 hover:text-red-600 py-1.5">↩ Đăng xuất</button>
+      </div>
+    </aside>
+    <main class="flex-1 ml-56">
+      <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-5 sticky top-0 z-10">
+        <h2 id="page-title" class="text-base font-semibold">Dashboard</h2>
+        <div class="flex items-center gap-3">
+          <button onclick="App.syncAmazon()" id="btn-sync" class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg font-medium">⚡ Sync Amazon</button>
+          <span id="user-name" class="text-sm text-slate-600 font-medium"></span>
+        </div>
+      </header>
+      <div class="p-5">
+        <section id="page-dashboard">
+          <div id="period-cards" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-6"></div>
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-5 shadow-sm lg:col-span-2">
+              <h3 class="font-semibold mb-3">Doanh thu &amp; Lợi nhuận theo ngày</h3>
+              <canvas id="sales-chart" height="110"></canvas>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+              <h3 class="font-semibold mb-3">Doanh thu theo sàn</h3>
+              <canvas id="market-chart" height="200"></canvas>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-semibold">Hiệu suất sản phẩm chi tiết</h3>
+              <label class="text-xs text-slate-500">Kỳ: <select id="range-select" onchange="App.loadDashboard()" class="text-xs border border-slate-200 rounded px-2 py-1 ml-1"><option value="7">7 ngày</option><option value="30" selected>30 ngày</option><option value="90">90 ngày</option></select></label>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm whitespace-nowrap">
+                <thead class="text-slate-500 border-b">
+                  <tr class="text-left">
+                    <th class="py-2">Sản phẩm</th>
+                    <th class="text-right">Đơn vị bán</th>
+                    <th class="text-right">Hoàn</th>
+                    <th class="text-right">Doanh thu</th>
+                    <th class="text-right">Giá bán TB</th>
+                    <th class="text-right">Quảng cáo</th>
+                    <th class="text-right">LN gộp</th>
+                    <th class="text-right">LN ròng</th>
+                    <th class="text-right">Biên</th>
+                    <th class="text-right">ROI</th>
+                    <th class="text-right">BSR</th>
+                  </tr>
+                </thead>
+                <tbody id="top-products"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section id="page-products" class="hidden"><div class="bg-white rounded-xl p-5 shadow-sm"><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">ASIN</th><th>SKU</th><th>Tên</th><th>Sàn</th><th class="text-right">Giá</th><th class="text-right">Tồn</th><th class="text-right">Đang về</th></tr></thead><tbody id="product-rows"></tbody></table></div></div></section>
+        <section id="page-inventory" class="hidden"><div class="bg-white rounded-xl p-5 shadow-sm"><div class="flex items-center justify-between mb-3"><h3 class="font-semibold">Gợi ý nhập hàng</h3><label class="text-sm text-slate-500">Tăng trưởng/tháng: <input id="growth" type="number" value="5" class="w-16 border rounded px-2 py-1 ml-1" onchange="App.loadInventory()" />%</label></div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Sản phẩm</th><th class="text-right">Vận tốc/ngày</th><th class="text-right">Tồn</th><th class="text-right">Còn đủ (ngày)</th><th class="text-right">Điểm đặt lại</th><th class="text-right">Nên nhập</th><th>Hết hàng dự kiến</th><th>Mức độ</th></tr></thead><tbody id="restock-rows"></tbody></table></div></div></section>
+        <section id="page-bsr" class="hidden space-y-4"><div id="ltv-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-3">Theo dõi BSR</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Sản phẩm</th><th class="text-right">BSR hiện tại</th><th class="text-right">TB tuần</th><th class="text-right">TB tháng</th><th class="text-right">vs Tuần</th><th class="text-right">vs Tháng</th></tr></thead><tbody id="bsr-rows"></tbody></table></div></div></section>
+        <section id="page-alerts" class="hidden"><div class="flex justify-end mb-3"><button onclick="App.scanAlerts()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700">🔍 Quét listing ngay</button></div><div id="alert-list" class="space-y-2"></div></section>
+        <section id="page-reimburse" class="hidden"><div class="flex justify-end mb-3"><button onclick="App.scanReimburse()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700">↻ Quét hồ sơ bồi thường</button></div><div class="bg-white rounded-xl p-5 shadow-sm"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Sản phẩm</th><th>Lý do</th><th class="text-right">SL</th><th class="text-right">Ước tính ($)</th><th>Trạng thái</th><th>Ngày</th></tr></thead><tbody id="reimburse-rows"></tbody></table></div></section>
+        <section id="page-ppc" class="hidden">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <label class="text-sm text-slate-600">🏬 Store: <select id="ppc-store-select" onchange="App.ppcChangeStore()" class="text-sm border border-slate-300 rounded-lg px-2 py-1.5 ml-1"></select></label>
+            <span id="ppc-store-file" class="text-xs text-slate-400"></span>
+            <div class="ml-auto flex items-center gap-2">
+              <label class="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 cursor-pointer">⬆ Tải file PPC lên<input id="ppc-upload" type="file" accept=".xlsx,.xlsm" class="hidden" onchange="App.ppcUpload(this)" /></label>
+              <button onclick="App.ppcExport('xlsx')" class="text-sm bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700">⬇ Excel</button>
+              <button onclick="App.ppcExport('csv')" class="text-sm border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50">⬇ CSV</button>
+            </div>
+          </div>
+          <div id="ppc-breadcrumb" class="flex items-center gap-2 text-sm mb-4 text-slate-500"></div>
+          <div id="ppc-view-listing"><div class="bg-white rounded-xl p-5 shadow-sm"><div class="flex items-center justify-between mb-3"><h3 class="font-semibold">Danh sách Listing — <span id="ppc-store" class="text-indigo-600"></span></h3><input id="ppc-search" oninput="App.ppcFilter()" placeholder="Tìm SKU / portfolio..." class="text-sm border border-slate-300 rounded-lg px-3 py-1.5 w-64" /></div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2 w-12">#</th><th>SKU</th><th>Portfolio</th><th>Trạng thái</th><th>Link</th><th class="text-right">Campaign</th></tr></thead><tbody id="ppc-listing-rows"></tbody></table></div></div></div>
+          <div id="ppc-view-campaigns" class="hidden"><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-1">Campaign của SKU: <span id="ppc-sku-name" class="text-indigo-600"></span></h3><p id="ppc-sku-msg" class="text-sm text-slate-400 mb-3"></p><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Campaign Name</th><th>Loại</th><th>Trạng thái</th><th class="text-right">Σ Impression</th><th class="text-right">Σ Click</th><th class="text-right">Σ Order</th><th class="text-right">CTR</th><th class="text-right">CVR</th><th></th></tr></thead><tbody id="ppc-campaign-rows"></tbody></table></div></div></div>
+          <div id="ppc-view-detail" class="hidden"><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-1">Campaign: <span id="ppc-camp-name" class="text-indigo-600"></span></h3><p class="text-sm text-slate-400 mb-3">Impression / Click / Order theo từng kỳ &amp; từng target</p><div class="overflow-x-auto"><table class="w-full text-sm"><thead id="ppc-detail-head" class="text-slate-500 border-b"></thead><tbody id="ppc-detail-rows"></tbody></table></div></div></div>
+        </section>
+        <section id="page-ads" class="hidden">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-semibold text-lg">Amazon Ads Campaigns</h3>
+              <p id="ads-sync-info" class="text-xs text-slate-500 mt-1"></p>
+            </div>
+            <button onclick="App.loadAmazonAds()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700">↻ Làm mới</button>
+          </div>
+          <div class="bg-white rounded-xl p-5 shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="text-slate-500 border-b">
+                  <tr class="text-left">
+                    <th class="py-2">Campaign Name</th>
+                    <th>Portfolio ID</th>
+                    <th>Strategy</th>
+                    <th class="text-right">Budget</th>
+                    <th>Start Date</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody id="ads-campaign-rows">
+                  <tr><td colspan="6" class="py-4 text-slate-400 text-center">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section id="page-ethics" class="hidden space-y-4"><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-1">🛡️ Cổng minh bạch dữ liệu</h3><p id="ethics-summary" class="text-sm text-slate-500 mb-4"></p><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Loại dữ liệu</th><th>Thu thập gì</th><th>Mục đích</th><th>Lưu trữ</th><th>Bắt buộc</th></tr></thead><tbody id="ethics-rows"></tbody></table></div><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-3">Lựa chọn đồng ý của bạn</h3><div id="consent-toggles" class="space-y-2 text-sm"></div><button onclick="App.minimize()" class="mt-4 text-sm text-red-600 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50">🧹 Xoá dữ liệu thô quá hạn</button></div></section>
+      </div>
+    </main>
+  </div>
+  <div id="sv-loading" class="hidden"><div class="sv-spinner"></div></div>
+  <style>
+    #sv-loading{position:fixed;inset:0;z-index:9999;background:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center}
+    #sv-loading.hidden{display:none}
+    .sv-spinner{width:40px;height:40px;border:3px solid #dbeafe;border-top-color:#4338ca;border-radius:50%;animation:svspin .8s linear infinite}
+    @keyframes svspin{to{transform:rotate(360deg)}}
+  </style>
+  <script src="/static/app.js"></script>
+</body>
+</html>

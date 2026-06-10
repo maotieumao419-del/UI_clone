@@ -1,0 +1,3737 @@
+[
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-4086248-1643443",
+    "EarliestShipDate": "2026-06-09T01:30:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T01:30:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:20:32Z",
+    "ShippingAddress": {
+      "StateOrRegion": "TX",
+      "City": "DALLAS",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-4086248-1643443",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.81"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T01:46:58Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.82"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.99"
+        },
+        "ASIN": "B0FDPRM245",
+        "SellerSKU": "POSITIVEJAR_DUMPSTER",
+        "Title": "60 Positive Dumpster Fire Jar, Affirmation Cards For Women, Dumpster Fire Gifts, Coworker Gifts for Women, Emotional Support Gift Desk Accessories,",
+        "ShippingTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsGift": "false",
+        "ShippingPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "0.99"
+        },
+        "ShippingDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.99"
+        },
+        "ShippingDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161890402664401"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-1258685-3931419",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:22:26Z",
+    "ShippingAddress": {
+      "StateOrRegion": "OK",
+      "City": "ADAIR",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-1258685-3931419",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.98"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:21:27Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.99"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.99"
+        },
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161889408375721"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-3704084-0829843",
+    "EarliestShipDate": "2026-06-09T08:30:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T08:30:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:23:43Z",
+    "ShippingAddress": {
+      "StateOrRegion": "WA",
+      "City": "Everett",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-3704084-0829843",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "9.92"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T04:59:40Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.94"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "8.98"
+        },
+        "ASIN": "B0CYGVKSGQ",
+        "SellerSKU": "bible jar-01",
+        "Title": "Bible Verse Jar, Christian Gifts for Women, Inspirational Scriptures for Women, Daughters, Bible Accessories, Father Day Gifts, Decorative Glass Inspirational Scripture Jar, Bible Jar",
+        "ShippingTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsGift": "false",
+        "ShippingPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "0.99"
+        },
+        "ShippingDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.99"
+        },
+        "ShippingDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161890714799681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-6345018-8205809",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:40:53Z",
+    "ShippingAddress": {
+      "StateOrRegion": "WY",
+      "City": "CHEYENNE",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-6345018-8205809",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "12.59"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:20:30Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.60"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "11.99"
+        },
+        "ASIN": "B0DM93RNKC",
+        "SellerSKU": "bible jar_03",
+        "Title": "Badass Affirmation Jar, Inspirational Gift, Daily Affirmations for Women, Funny Affirmation Cards, Birthday Gifts for Her, Women, Valentines Day Gifts",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161859753924281"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-9023529-0292232",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:50:45Z",
+    "ShippingAddress": {
+      "StateOrRegion": "AL",
+      "City": "ATHENS",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-9023529-0292232",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.79"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:02:29Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.80"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.99"
+        },
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161900763902921"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-6817873-4336210",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T19:53:50Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-6817873-4336210",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-08T19:53:55Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GS645DBF",
+        "SellerSKU": "HANDPRINT_SIGN_DAD",
+        "Title": "Best Dad Ever Gifts from Kids, Fathers Day Gift for Dad, Personalized Style Wooden Plaque Decor, Hands Down Love Dad Sign, Birthday Gift for Father, DIY Handprint Kids",
+        "OrderItemId": "161859835015881"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-1187934-0537858",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T20:39:57Z",
+    "ShippingAddress": {
+      "StateOrRegion": "NC",
+      "City": "FAYETTEVILLE",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-1187934-0537858",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.68"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T02:41:17Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.70"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.98"
+        },
+        "ASIN": "B0H1LN6K74",
+        "SellerSKU": "250TH_DEVOM_NEVERDORGOTTEN",
+        "Title": "Patriotic Military Memorial Decor, Veteran Tribute Tabletop Sign, American Flag Soldier Desk Decor, Memorial Day, Veterans Day Gift, Patriotic Tabletop Decor, American Eagle Freedom Sign, Veteran Memorial Plaque",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161898757646521"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-7246850-8525867",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T21:23:55Z",
+    "ShippingAddress": {
+      "StateOrRegion": "UT",
+      "City": "DRAPER",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-7246850-8525867",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "15.03"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T03:59:10Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "1.04"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161902150445281"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-2937318-2014666",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T21:44:55Z",
+    "ShippingAddress": {
+      "StateOrRegion": "NH",
+      "City": "INTERVALE",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-2937318-2014666",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "9.99"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:55:59Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.99"
+        },
+        "ASIN": "B0H2LZQHTH",
+        "SellerSKU": "250TH_GNOME_AMERICA250",
+        "Title": "America 250 Patriotic Gnome Decor, USA 250th Anniversary Decoration 1776-2026, Independence Day Wooden Tabletop Sign, Liberty Bell & We The People Gnome Display, Patriotic Home Office Shelf Decor",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161907046861841"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-5275769-1920201",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T23:01:01Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-5275769-1920201",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": true,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-08T23:01:07Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0FJRX2KDG",
+        "SellerSKU": "ONM_DRAGONFLY_2PCS",
+        "Title": "2PCS Dragonfly Gifts for Women, Meaningful Ornaments with Story Card, Christmas Tree Decorations, for Women, White Elephant Gift, Dragon Fly Gifts, Dragonfly Ornament",
+        "OrderItemId": "161902738891601"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-2057338-9919434",
+    "EarliestShipDate": "2026-06-15T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-15T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T23:08:00Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-2057338-9919434",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": true,
+    "PaymentMethodDetails": [
+      "Invoice"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-08T23:08:08Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "OrderItemId": "161899599629681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-8296862-4943457",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T23:46:11Z",
+    "ShippingAddress": {
+      "StateOrRegion": "FL",
+      "City": "OCALA",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-8296862-4943457",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "8.58"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T04:27:29Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.60"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "7.98"
+        },
+        "ASIN": "B0FTSC9KTG",
+        "SellerSKU": "CROSSCAR_BLUEBUTTERFLY",
+        "Title": "Cross for Car Mirror Hanging Christian Gifts for Men, Women - Scan Phone for Daily Bible Verse Car Rearview Decor Accessories, Rearview Mirror Faith Gift for Women, Butterfly Rose Design",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161909263293561"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-7848007-0521027",
+    "EarliestShipDate": "2026-06-09T09:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T09:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T23:49:39Z",
+    "ShippingAddress": {
+      "StateOrRegion": "NJ",
+      "City": "Lumberton",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-7848007-0521027",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.64"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T11:54:50Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.66"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.98"
+        },
+        "ASIN": "B0F62HNF16",
+        "SellerSKU": "ONM_NURSE",
+        "Title": "Nursing 2026 Graduation Gift, Nurse Gifts for Women, Nursing Ornament, Appreciation Gifts for Women, New Nurse Gift, Gifts for Nurses",
+        "ShippingTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsGift": "false",
+        "ShippingPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "1.00"
+        },
+        "ShippingDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "1.00"
+        },
+        "ShippingDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161908466632401"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-2820877-6748255",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-08T23:56:21Z",
+    "ShippingAddress": {
+      "StateOrRegion": "PA",
+      "City": "TURTLE CREEK",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-2820877-6748255",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "16.94"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:22:41Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.96"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "15.98"
+        },
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161909493455761"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-1861923-9942665",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T00:12:52Z",
+    "ShippingAddress": {
+      "StateOrRegion": "PA",
+      "City": "DOWNINGTOWN",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-1861923-9942665",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "14.83"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T10:13:34Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.84"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0FDWNTSR7",
+        "SellerSKU": "SCHOOLBOARD_01",
+        "Title": "Personalized Teacher Door Sign with Writable Name - Custom Boho Classroom Decor, Back to School Welcome Sign for Kindergarten, Preschool, Middle School, Teacher Gift with Desk Stand & Marker",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161910574107961"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-2841265-6367439",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T00:34:58Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-2841265-6367439",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "14.90"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T13:42:30Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.91"
+        },
+        "QuantityShipped": 0,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0FXGYCV6F",
+        "SellerSKU": "POSITIVEJAR_BASKETBALL",
+        "Title": "Positive Basketball Jar, 60 Daily Affirmation Cards, 60 Motivational Messages for Players, Kids & Teens, Basketball Gifts For Boys, Friendship Gift, Positive Quotes Jar, Best Friend Gift",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161910055452681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-1559130-7050663",
+    "EarliestShipDate": "2026-06-09T16:30:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T16:30:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T00:48:34Z",
+    "ShippingAddress": {
+      "StateOrRegion": "WA",
+      "City": "LAKE STEVENS",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-1559130-7050663",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.91"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:47:07Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.93"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.98"
+        },
+        "ASIN": "B0F62HNF16",
+        "SellerSKU": "ONM_NURSE",
+        "Title": "Nursing 2026 Graduation Gift, Nurse Gifts for Women, Nursing Ornament, Appreciation Gifts for Women, New Nurse Gift, Gifts for Nurses",
+        "ShippingTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsGift": "false",
+        "ShippingPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "1.00"
+        },
+        "ShippingDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "1.00"
+        },
+        "ShippingDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161900346243721"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-2325978-4167445",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T00:57:25Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-2325978-4167445",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T00:57:28Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "OrderItemId": "161861899074281"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-7231273-5255458",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T00:58:26Z",
+    "ShippingAddress": {
+      "StateOrRegion": "TX",
+      "City": "DALLAS",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-7231273-5255458",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "15.14"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T10:06:07Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "1.15"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0GFKLJQFJ",
+        "SellerSKU": "VLT_ILOVEYOUBECAUSE",
+        "Title": "Musemory I Love You Because Jar, Father Day Gifts, 60 Blank Heart Notes, Love Notes, Birthday Gifts for Mom Women Wife Grandma from Son, Romantic Personalized Gift for Wife, Husband",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161911655593441"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-4187508-9535463",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T01:07:09Z",
+    "ShippingAddress": {
+      "StateOrRegion": "WI",
+      "City": "MADISON",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-4187508-9535463",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "13.69"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T09:03:27Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.71"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "12.98"
+        },
+        "ASIN": "B0GVYTQLYB",
+        "SellerSKU": "DESK-DECOR_AMERICA250",
+        "Title": "250th Anniversary USA Ornament 1776 -2026, America 250 Eagle Patriotic Tabletop Decoration, 4th of JulyDecorations, Patriotic Gift for Veterans Independence Day",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161911456295921"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-6160457-4351434",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T01:32:41Z",
+    "ShippingAddress": {
+      "StateOrRegion": "DE",
+      "City": "DOVER",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-6160457-4351434",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "13.99"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:49:06Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0GZGMLGDD",
+        "SellerSKU": "250TH_DOORSIGN_DAIBANG",
+        "Title": "250th Anniversary Decorations for Home, Patriotic Eagle Door Sign, America 250th Birthday Decor, Fourth of July Decorations, USA Independence Day Hanging Wall Decor, Patriotic Decorations",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161918749791241"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-3299120-8385803",
+    "EarliestShipDate": "2026-06-11T10:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-11T10:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T01:53:07Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-3299120-8385803",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T01:53:11Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GVYTQLYB",
+        "SellerSKU": "DESK-DECOR_AMERICA250",
+        "Title": "250th Anniversary USA Ornament 1776 -2026, America 250 Eagle Patriotic Tabletop Decoration, 4th of JulyDecorations, Patriotic Gift for Veterans Independence Day",
+        "OrderItemId": "161918920444561"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-4162487-1017815",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T02:03:58Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-4162487-1017815",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T02:04:01Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GZGMLGDD",
+        "SellerSKU": "250TH_DOORSIGN_DAIBANG",
+        "Title": "250th Anniversary Decorations for Home, Patriotic Eagle Door Sign, America 250th Birthday Decor, Fourth of July Decorations, USA Independence Day Hanging Wall Decor, Patriotic Decorations",
+        "OrderItemId": "161916523117841"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-3973765-1486610",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T02:17:34Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-3973765-1486610",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T02:38:39Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "OrderItemId": "161894335673321"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-2228447-8913065",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T02:50:06Z",
+    "ShippingAddress": {
+      "StateOrRegion": "CO",
+      "City": "CENTENNIAL",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-2228447-8913065",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "14.93"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T17:28:18Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.94"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "13.99"
+        },
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161922725686441"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-3843904-3041045",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T03:02:31Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-3843904-3041045",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:09:54Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "true",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0FJRX2KDG",
+        "SellerSKU": "ONM_DRAGONFLY_2PCS",
+        "Title": "2PCS Dragonfly Gifts for Women, Meaningful Ornaments with Story Card, Christmas Tree Decorations, for Women, White Elephant Gift, Dragon Fly Gifts, Dragonfly Ornament",
+        "OrderItemId": "161923213454721"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-9942346-2567461",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T03:09:47Z",
+    "ShippingAddress": {
+      "StateOrRegion": "CA",
+      "City": "MURRIETA",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-9942346-2567461",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "13.04"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T11:48:56Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "1.05"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "11.99"
+        },
+        "ASIN": "B0DM93RNKC",
+        "SellerSKU": "bible jar_03",
+        "Title": "Badass Affirmation Jar, Inspirational Gift, Daily Affirmations for Women, Funny Affirmation Cards, Birthday Gifts for Her, Women, Valentines Day Gifts",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161922927554561"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-1770823-2031413",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T03:53:16Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-1770823-2031413",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T03:53:19Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0FDWNP259",
+        "SellerSKU": "SCHOOLBOARD_02",
+        "Title": "First Day Last Day of School Board Sign for Kids, First Day of Daycare Sign, Back To School Board Sign, Forst Day of School Sign, First Day of School Board - Back to School Kids Supplies Preschool",
+        "OrderItemId": "161895004559201"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-8665698-0773851",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T03:54:28Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-8665698-0773851",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T03:58:02Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GWQF4FM6",
+        "SellerSKU": "FATHERDAY_DADJOKESJAR",
+        "Title": "Dad Joke Jar, Gifts Set with Card Hat, Gag Gift for Men, Joke Cards Jar, Fathers Day Gift, Birthday Present for Husband, Fun Family Game Night Humor Kit",
+        "OrderItemId": "161919685050321"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-3316777-3281846",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T04:16:12Z",
+    "ShippingAddress": {
+      "StateOrRegion": "WI",
+      "City": "LUXEMBURG",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-3316777-3281846",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.54"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:30:28Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.55"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.99"
+        },
+        "ASIN": "B0FS68WLRJ",
+        "SellerSKU": "POSITIVEJAR_BEE",
+        "Title": "Musemory Positive Bee Jar, 60 Emotional Support Bee Gifts, Affirmation Cards For Women, Friendship Gift, Quotes Jar, Best Friend Gift, Positive Bee Decor, Positive Bee Decor",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161916126025641"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-6842351-5455465",
+    "EarliestShipDate": "2026-06-09T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T04:29:22Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-6842351-5455465",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T04:29:27Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "OrderItemId": "161923608858361"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-6006241-2944265",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T06:29:49Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-6006241-2944265",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:29:52Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "OrderItemId": "161920281186201"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-4598854-7294634",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T06:32:19Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-4598854-7294634",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:32:24Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F62HNF16",
+        "SellerSKU": "ONM_NURSE",
+        "Title": "Nursing 2026 Graduation Gift, Nurse Gifts for Women, Nursing Ornament, Appreciation Gifts for Women, New Nurse Gift, Gifts for Nurses",
+        "OrderItemId": "161925680533681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-3746592-2617031",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T06:45:46Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-3746592-2617031",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:45:50Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GVYMXG84",
+        "SellerSKU": "MONEYHOLDER_GRADUATION",
+        "Title": "Pack 6Pcs, Graduation Money Holder Cards, Congrats Grad Cash Gift Holder Set, Unique Graduation Gift Card Holders 2026, Graduation Cards 2026, Funny Grad Cards for High School",
+        "OrderItemId": "161927880547441"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-7844076-2295414",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T06:47:36Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-7844076-2295414",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T06:47:39Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GZGMLGDD",
+        "SellerSKU": "250TH_DOORSIGN_DAIBANG",
+        "Title": "250th Anniversary Decorations for Home, Patriotic Eagle Door Sign, America 250th Birthday Decor, Fourth of July Decorations, USA Independence Day Hanging Wall Decor, Patriotic Decorations",
+        "OrderItemId": "161928986869761"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-8006548-7033032",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T10:05:07Z",
+    "ShippingAddress": {
+      "StateOrRegion": "ME",
+      "City": "BREWER",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-8006548-7033032",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "8.42"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:42:50Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.44"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "7.98"
+        },
+        "ASIN": "B0GWQF4FM6",
+        "SellerSKU": "FATHERDAY_DADJOKESJAR",
+        "Title": "Dad Joke Jar, Gifts Set with Card Hat, Gag Gift for Men, Joke Cards Jar, Fathers Day Gift, Birthday Present for Husband, Fun Family Game Night Humor Kit",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161930093651841"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-7749062-8347451",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T10:26:48Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-7749062-8347451",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T10:26:52Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "OrderItemId": "161929727478681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-0989163-9457834",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T12:12:05Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-0989163-9457834",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:44:18Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LJVKCY",
+        "SellerSKU": "250TH_DEVOM_LANDOFTHEFREE",
+        "Title": "Patriotic Eagle Table Decor, Fourth of July Decorations, American Flag Desk Sign, Veteran Memorial Gift, Patriotic Tabletop Decor, American Eagle Freedom Sign, Veteran Memorial Plaque",
+        "OrderItemId": "161937116446841"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-9114836-7701030",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T12:33:36Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-9114836-7701030",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T12:33:40Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GZGMLGDD",
+        "SellerSKU": "250TH_DOORSIGN_DAIBANG",
+        "Title": "250th Anniversary Decorations for Home, Patriotic Eagle Door Sign, America 250th Birthday Decor, Fourth of July Decorations, USA Independence Day Hanging Wall Decor, Patriotic Decorations",
+        "OrderItemId": "161918570915681"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-6158559-3801016",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Shipped",
+    "NumberOfItemsShipped": 1,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T12:46:45Z",
+    "ShippingAddress": {
+      "StateOrRegion": "NE",
+      "City": "NORFOLK",
+      "CountryCode": "US"
+    },
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-6158559-3801016",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "10.73"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:39:34Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.75"
+        },
+        "QuantityShipped": 1,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "9.98"
+        },
+        "ASIN": "B0F8VBSG3T",
+        "SellerSKU": "CARVISOR_DAD",
+        "Title": "Magnetic Acrylic Car Visor Photo Clip, Father's Day, Birthday Gift For Dad, Picture Holder with Love Message, Drive Safe Car Accessory For Dad, Best Dad Ever Gifts, Birthday Gifts from Daughter",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161926489007721"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-8961402-9692234",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T12:47:39Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-8961402-9692234",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T12:47:46Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GWQF4FM6",
+        "SellerSKU": "FATHERDAY_DADJOKESJAR",
+        "Title": "Dad Joke Jar, Gifts Set with Card Hat, Gag Gift for Men, Joke Cards Jar, Fathers Day Gift, Birthday Present for Husband, Fun Family Game Night Humor Kit",
+        "OrderItemId": "161938079414481"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-2166900-2905815",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T12:59:05Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-2166900-2905815",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T13:05:07Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GSDQ2CQ6",
+        "SellerSKU": "MOTHERDAY_ILOVEYOUMOM",
+        "Title": "Reasons Why I Love You Mom Jar, DIY Love Notes in a Jar with Envelopes, What I Love About Mom, Mothers Day Gifts for Mom from Daughter Son, Mother Birthday Gifts",
+        "OrderItemId": "161939046486641"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-3300562-3665035",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T13:46:57Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-3300562-3665035",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T13:47:01Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0DJR4343W",
+        "SellerSKU": "PU-2DN9-R32Y",
+        "Title": "Scratch Off Map of United States, All 63 US National Parks Scratch Off Poster, Scratch Off World Map, Travel Scratch Off Map, Us Map for Travel Tracking, Valentine Gift, Valentine Gifts For Her, Valentine Gift For Men [Unknown Binding] [1905]",
+        "OrderItemId": "161939500442201"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-0308941-2797804",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T14:10:30Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-0308941-2797804",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T14:11:13Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "true",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F7RL4G2Q",
+        "SellerSKU": "bible jar_daughter",
+        "Title": "Read Me When Bible Verse Jar, Bible Accessories, Prayer Jar, Graduation for Her, Christian Gift For Women, Teacher Gifts, Fathers Day Gift For Dad (Bible Jar for Daughter)",
+        "OrderItemId": "161896727501281"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-5858494-7592260",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T14:10:37Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-5858494-7592260",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T14:11:22Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F8VBSG3T",
+        "SellerSKU": "CARVISOR_DAD",
+        "Title": "Magnetic Acrylic Car Visor Photo Clip, Father's Day, Birthday Gift For Dad, Picture Holder with Love Message, Drive Safe Car Accessory For Dad, Best Dad Ever Gifts, Birthday Gifts from Daughter",
+        "OrderItemId": "161939879919641"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-5257574-9369818",
+    "EarliestShipDate": "2026-06-10T09:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T09:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T14:40:17Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-5257574-9369818",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T14:40:23Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "OrderItemId": "161939930345881"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-0318520-3842611",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T14:58:05Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-0318520-3842611",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T14:58:11Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F8VBSG3T",
+        "SellerSKU": "CARVISOR_DAD",
+        "Title": "Magnetic Acrylic Car Visor Photo Clip, Father's Day, Birthday Gift For Dad, Picture Holder with Love Message, Drive Safe Car Accessory For Dad, Best Dad Ever Gifts, Birthday Gifts from Daughter",
+        "OrderItemId": "161942048190561"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-1257003-7732226",
+    "EarliestShipDate": "2026-06-11T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-11T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T15:10:09Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-1257003-7732226",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:16:12Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GXKRXV5H",
+        "SellerSKU": "250TH_KEYCHAIN_CHUONG",
+        "Title": "Musemory America 250 Keychain 1776-2026 - Patriotic USA Keychain Set, 4th of July Independence Day Gift, Eagle Liberty Bell Flag Acrylic Keyring, American Anniversary Souvenir",
+        "OrderItemId": "161938756867441"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-5146920-0381021",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T15:19:39Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-5146920-0381021",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:19:44Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GWQF4FM6",
+        "SellerSKU": "FATHERDAY_DADJOKESJAR",
+        "Title": "Dad Joke Jar, Gifts Set with Card Hat, Gag Gift for Men, Joke Cards Jar, Fathers Day Gift, Birthday Present for Husband, Fun Family Game Night Humor Kit",
+        "OrderItemId": "161947423445561"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-7658094-0862604",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T15:25:46Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-7658094-0862604",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "OrderTotal": {
+      "CurrencyCode": "USD",
+      "Amount": "13.02"
+    },
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:26:15Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "TaxCollection": {
+          "Model": "MarketplaceFacilitator",
+          "ResponsibleParty": "Amazon Services, Inc."
+        },
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "BuyerInfo": {},
+        "ItemTax": {
+          "CurrencyCode": "USD",
+          "Amount": "1.03"
+        },
+        "QuantityShipped": 0,
+        "ItemPrice": {
+          "CurrencyCode": "USD",
+          "Amount": "11.99"
+        },
+        "ASIN": "B0GZHBKGCM",
+        "SellerSKU": "250TH_DOORSIGN_250THANNIVERSARY",
+        "Title": "250th Anniversary Decorations for Home, Patriotic Door Sign, America 250th Birthday Decor, Fourth of July Decorations, USA 1776-2026 Hanging Wall Plaque, Patriotic Decorations for Front Door",
+        "IsGift": "false",
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "PromotionDiscountTax": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "PromotionDiscount": {
+          "CurrencyCode": "USD",
+          "Amount": "0.00"
+        },
+        "OrderItemId": "161931504514081"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-6883770-6791433",
+    "EarliestShipDate": "2026-06-10T05:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T05:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T15:40:35Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-6883770-6791433",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:40:43Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "OrderItemId": "161942733876361"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-4220143-6028261",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T15:58:21Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-4220143-6028261",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T15:58:24Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LHR51Z",
+        "SellerSKU": "FATHERDAY_DADGIFTFROMDAUGHTER",
+        "Title": "Dad Gift from Daughter, Best Dad Ever Tabletop Sign, Father Daughter Acrylic Plaque with Heartfelt Message, Fathers Day Gift for Dad, Birthday Christmas Desk Decor for Home Office",
+        "OrderItemId": "161942833659601"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-5674599-9484234",
+    "EarliestShipDate": "2026-06-10T09:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T09:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:07:58Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-5674599-9484234",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:08:06Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0DJR4343W",
+        "SellerSKU": "PU-2DN9-R32Y",
+        "Title": "Scratch Off Map of United States, All 63 US National Parks Scratch Off Poster, Scratch Off World Map, Travel Scratch Off Map, Us Map for Travel Tracking, Valentine Gift, Valentine Gifts For Her, Valentine Gift For Men [Unknown Binding] [1905]",
+        "OrderItemId": "161947827912121"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-1505480-6308235",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:24:32Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-1505480-6308235",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:24:37Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GV365N6Z",
+        "SellerSKU": "STK_250_ANNI_2PCS",
+        "Title": "Set of 2, 4-8 Inches, USA 250th Anniversary Car Decal, Patriotic Eagle 1776-2026 Sticker, American Flag Auto Decals, Waterproof Vinyl for Cars, Windows, Trucks",
+        "OrderItemId": "161948631611641"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-1305980-8967439",
+    "EarliestShipDate": "2026-06-10T04:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T04:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:34:28Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-1305980-8967439",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:34:32Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0FTSDK542",
+        "SellerSKU": "CROSSCAR_PINKBUTTERFLY",
+        "Title": "Christian Floral Cross Car Hanging Ornament - \"I Am With You Always\" Matthew 28:20 - Rearview Mirror Faith Gift for Women, Butterfly Rose Design, Scripture Card & Gift Box, Drive Safe Blessing Décor",
+        "OrderItemId": "161931921635801"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-6565295-7929807",
+    "EarliestShipDate": "2026-06-11T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Canceled",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 0,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-11T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:51:31Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-6565295-7929807",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:53:22Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 0,
+        "ASIN": "B0GVZ1733Q",
+        "SellerSKU": "NURSEBADGEREEL_CUFFEM",
+        "Title": "Funny Nurse Badge Reel Retractable ID Holder - Cute Duck Nurse Badge Clip for RN CNA LPN, Medical ID Badge Holder for Scrubs, Gift Idea (Cuff)",
+        "OrderItemId": "161948145193121"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-8097555-4657024",
+    "EarliestShipDate": "2026-06-11T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 2,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-11T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:53:57Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-8097555-4657024",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:54:01Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GVZ1733Q",
+        "SellerSKU": "NURSEBADGEREEL_CUFFEM",
+        "Title": "Funny Nurse Badge Reel Retractable ID Holder - Cute Duck Nurse Badge Clip for RN CNA LPN, Medical ID Badge Holder for Scrubs, Gift Idea (Cuff)",
+        "OrderItemId": "161932059507041"
+      },
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0GVYXMMNX",
+        "SellerSKU": "NURSEBADGEREEL_STICKEM",
+        "Title": "Funny Nurse Badge Reel Retractable ID Holder - Cute Duck Nurse Badge Clip for RN CNA LPN, Medical ID Badge Holder for Scrubs, Gift Idea (Stick)",
+        "OrderItemId": "161932059507161"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-5167659-4310646",
+    "EarliestShipDate": "2026-06-11T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-11T06:59:59Z",
+    "ShipServiceLevel": "Standard",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T16:56:03Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-5167659-4310646",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": true,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T16:56:19Z",
+    "ShipmentServiceLevelCategory": "Standard",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "OrderItemId": "161943129563481"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-7788085-2317804",
+    "EarliestShipDate": "2026-06-09T22:00:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-09T22:00:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T17:07:09Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-7788085-2317804",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T17:07:13Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0DT9QCSQN",
+        "SellerSKU": "CP-E4EK-0HRT",
+        "Title": "90 Date Ideas In A Jar, Date Night Ideas, Gifts for Women, Date Ideas, Birthday Gifts for Women, Date Jar Wedding, Date Night Game for Him or Her, Gift for Couples, Positive Affirmation Cards",
+        "OrderItemId": "161950166338481"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "112-6325614-4922661",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T17:23:17Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "112-6325614-4922661",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T17:25:04Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0DT9QW3FH",
+        "SellerSKU": "3N-FE02-6LBQ",
+        "Title": "90 Love Notes Jar, Romantic gifts for Her, Girlfriend Wife Husband, Positive Affirmation Cards, Valentines day Gifts for Women, Love for Him",
+        "OrderItemId": "161950385280641"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "113-8494521-7909042",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T17:26:10Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "113-8494521-7909042",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T17:26:56Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "OrderItemId": "161949896631361"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "114-3596752-9705823",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T17:28:46Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "114-3596752-9705823",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T17:34:48Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0H1LJX4T9",
+        "SellerSKU": "WEDDING_DEVOM_OURADVENTUREBEGIN",
+        "Title": "Romantic Wedding Gift for Couple, Wooden Heart Tree Tabletop Decor with \"Our Adventure Begins\", Wedding Gift for Husband Wife, Engagement Bridal Shower Newlywed Home Decor",
+        "OrderItemId": "161945883866761"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-6325914-9266601",
+    "EarliestShipDate": "2026-06-10T10:30:00Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T10:30:00Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T18:16:42Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-6325914-9266601",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": false,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:17:43Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F9PGKBX2",
+        "SellerSKU": "POSITIVEJAR_TURTLE",
+        "Title": "Musemory 60 Positive Cards Turtle Jar, Affirmation Cards For Women, Friendship Gift, Best Friend Gift, Positive Decor, Sea Turtle Gifts, Card Turtle for Her, Decoration For Home Office",
+        "OrderItemId": "161953101430841"
+      }
+    ]
+  },
+  {
+    "BuyerInfo": {},
+    "AmazonOrderId": "111-9887925-4643408",
+    "EarliestShipDate": "2026-06-10T06:59:59Z",
+    "SalesChannel": "Amazon.com",
+    "OrderStatus": "Pending",
+    "NumberOfItemsShipped": 0,
+    "OrderType": "StandardOrder",
+    "IsPremiumOrder": false,
+    "IsPrime": false,
+    "FulfillmentChannel": "AFN",
+    "NumberOfItemsUnshipped": 1,
+    "HasRegulatedItems": false,
+    "IsReplacementOrder": "false",
+    "IsSoldByAB": false,
+    "LatestShipDate": "2026-06-10T06:59:59Z",
+    "ShipServiceLevel": "Expedited",
+    "IsISPU": false,
+    "MarketplaceId": "ATVPDKIKX0DER",
+    "PurchaseDate": "2026-06-09T18:18:19Z",
+    "IsAccessPointOrder": false,
+    "SellerOrderId": "111-9887925-4643408",
+    "PaymentMethod": "Other",
+    "IsBusinessOrder": true,
+    "PaymentMethodDetails": [
+      "Standard"
+    ],
+    "IsGlobalExpressEnabled": false,
+    "LastUpdateDate": "2026-06-09T18:20:03Z",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "_items": [
+      {
+        "ProductInfo": {
+          "NumberOfItems": "1"
+        },
+        "IsGift": "false",
+        "BuyerInfo": {},
+        "QuantityShipped": 0,
+        "IsTransparency": false,
+        "QuantityOrdered": 1,
+        "ASIN": "B0F5V9Z11R",
+        "SellerSKU": "UY-AO7W-2FWB",
+        "Title": "Musemory Magnetic Reward Jar, Personalized Smiley Tokens Reward Jar for Kids, DIY, Reward Jar, Classroom Management Tool, Reward Jars for Kids Magnetic, Back to School Gift for Kids",
+        "OrderItemId": "161932562282081"
+      }
+    ]
+  }
+]

@@ -1,0 +1,51 @@
+=== ADS REPORT FIELDS (48 fields) ===
+Field                                                   Type       Example
+--------------------------------------------------------------------------------------------------------------
+SB.brandStorePageView                                   int        0
+SB.brandedSearches                                      int        0
+SB.campaignId                                           int        202086752236063
+SB.campaignName                                         str        VLT_ILOVEYOUBECAUSE_SB_KT_VIDEO
+SB.campaignStatus                                       str        PAUSED
+SB.clicks                                               int        0
+SB.cost                                                 int        0
+SB.date                                                 str        2026-06-08
+SB.detailPageViews                                      int        0
+SB.impressions                                          int        0
+SB.newToBrandPurchases                                  int        0
+SB.newToBrandSales                                      int        0
+SB.purchases                                            int        0
+SB.purchasesPromoted                                    int        0
+SP.attributedSalesSameSku14d                            int        0
+SP.attributedSalesSameSku1d                             int        0
+SP.attributedSalesSameSku7d                             int        0
+SP.campaignBiddingStrategy                              str        legacy
+SP.campaignId                                           int        159913530791208
+SP.campaignName                                         str        B0F5V9Z11R_SP00_behavior chart for kids_EXACT_Minh
+SP.campaignStatus                                       str        ENABLED
+SP.clicks                                               int        0
+SP.cost                                                 int        0
+SP.impressions                                          int        36
+SP.purchases14d                                         int        0
+SP.purchases1d                                          int        0
+SP.purchases30d                                         int        0
+SP.purchases7d                                          int        0
+SP.roasClicks14d                                        NoneType   None
+SP.sales14d                                             int        0
+SP.sales1d                                              int        0
+SP.sales30d                                             int        0
+SP.sales7d                                              int        0
+SP.unitsSoldClicks1d                                    int        0
+SP_ASIN.adGroupId                                       int        418347992331053
+SP_ASIN.adGroupName                                     str        Ad Group - 1/15/2026 10:31:41.654
+SP_ASIN.advertisedAsin                                  str        B0F5V9Z11R
+SP_ASIN.advertisedSku                                   str        UY-AO7W-2FWB
+SP_ASIN.campaignId                                      int        159913530791208
+SP_ASIN.campaignName                                    str        B0F5V9Z11R_SP00_behavior chart for kids_EXACT_Minh
+SP_ASIN.clicks                                          int        0
+SP_ASIN.cost                                            int        0
+SP_ASIN.impressions                                     int        36
+SP_ASIN.purchases1d                                     int        0
+SP_ASIN.purchases7d                                     int        0
+SP_ASIN.sales1d                                         int        0
+SP_ASIN.sales7d                                         int        0
+SP_ASIN.unitsSoldClicks1d                               int        0

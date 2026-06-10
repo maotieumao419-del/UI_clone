@@ -1,0 +1,1 @@
+window.PagerService=function(){var e={GetPager:function(e,a,t){a=a||1,t=t||10;var r,n,g=Math.ceil(e/t);g<=10?(r=1,n=g):a<=6?(r=1,n=10):a+4>=g?(r=g-9,n=g):(r=a-5,n=a+4);var i=(a-1)*t,P=Math.min(i+t-1,e-1),c=_.range(r,n+1);return{totalItems:e,currentPage:a,pageSize:t,totalPages:g,startPage:r,endPage:n,startIndex:i,endIndex:P,pages:c}}};return e};
