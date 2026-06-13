@@ -420,14 +420,41 @@ def _shift_month(d, months: int):
     return d.replace(year=y, month=m, day=1)
 
 
+def _supabase_select_all(build_query) -> list[dict]:
+    """Lấy hết kết quả 1 query Supabase, phân trang 1000 dòng/lần (giới hạn
+    mặc định của PostgREST). `build_query` là callable trả về 1 query builder
+    MỚI mỗi lần gọi (vì `.range()` phải áp lên builder chưa execute)."""
+    rows: list[dict] = []
+    page = 1000
+    offset = 0
+    while True:
+        batch = build_query().range(offset, offset + page - 1).execute().data or []
+        rows.extend(batch)
+        if len(batch) < page:
+            break
+        offset += page
+    return rows
+
+
 def period_overview(db: Session, owner_id: int) -> dict:
     """5 thẻ tổng quan kiểu Sellerboard: Hôm nay / Hôm qua / Từ đầu tháng /
     Dự báo cả tháng / Tháng trước — mỗi thẻ gồm Sales, Orders/Units, Refunds,
     Adv. cost, Est. payout, Net profit (kèm % so với kỳ tham chiếu).
 
+    Đọc trực tiếp từ NEW_summary_order_items / NEW_summary_campaigns trên
+    Supabase — đây là dữ liệu Phase 2 đã hiệu chỉnh (phí Amazon thực/ước theo
+    từng SKU, COGS thực, ads phân bổ 3 tầng), thay cho local DB
+    (Product.referral_fee_pct/fba_fee_per_unit mặc định + Order.ppc_cost luôn
+    = 0 vốn cho ra lợi nhuận ảo cao hơn thực tế nhiều).
+
+    LƯU Ý: NEW_summary_* hiện KHÔNG có owner_id (single-tenant per Supabase
+    project) — `owner_id` chỉ được giữ lại để tương thích chữ ký hàm/route.
+
     'Est. payout' xấp xỉ = Doanh thu - Phí Amazon - Chi phí PPC: số tiền thực
     về tài khoản người bán (Amazon Ads cũng trừ tiền trực tiếp từ tài khoản).
     """
+    from .supabase_client import get_supabase_client
+
     now = now_marketplace()
     today = now.date()
     yesterday = today - timedelta(days=1)
@@ -440,22 +467,29 @@ def period_overview(db: Session, owner_id: int) -> dict:
     days_in_month = (next_month_start - month_start).days
     days_elapsed = (today - month_start).days + 1
 
-    df = _build_dataframe(db, owner_id,
-                          datetime.combine(prev_prev_month_start, datetime.min.time()), now)
-    if df.empty:
-        return {"periods": []}
-    df["d"] = pd.to_datetime(df["date"]).dt.date
+    sb = get_supabase_client()
 
     def agg(lo, hi):
-        sl = df[(df["d"] >= lo) & (df["d"] <= hi)]
-        if sl.empty:
-            return {"sales": 0.0, "orders": 0, "units": 0, "refunds": 0,
-                    "fees": 0.0, "ppc": 0.0, "net_profit": 0.0}
+        lo_s, hi_s = lo.isoformat(), hi.isoformat()
+        items = _supabase_select_all(lambda: sb.table("NEW_summary_order_items")
+            .select("order_number,units,sales,amazon_fees,refunds,net_profit")
+            .gte("order_date", lo_s).lte("order_date", hi_s))
+        camps = _supabase_select_all(lambda: sb.table("NEW_summary_campaigns")
+            .select("ad_spend")
+            .gte("period_start", lo_s).lte("period_end", hi_s))
+
+        # ad_spend lưu âm (chi phí); amazon_fees cũng lưu âm (đã trừ vào gross).
+        ad_spend = sum(r.get("ad_spend") or 0 for r in camps)
+        item_net = sum(r.get("net_profit") or 0 for r in items)  # chưa gồm ads
+
         return {
-            "sales": float(sl["sales"].sum()), "orders": int(sl["order_id"].nunique()),
-            "units": int(sl["units"].sum()), "refunds": int(sl["refunded"].sum()),
-            "fees": float(sl["fees"].sum()), "ppc": float(sl["ppc"].sum()),
-            "net_profit": float(sl["net_profit"].sum()),
+            "sales": round(sum(r.get("sales") or 0 for r in items), 2),
+            "orders": len({r["order_number"] for r in items if r.get("order_number")}),
+            "units": sum(int(r.get("units") or 0) for r in items),
+            "refunds": sum(int(r.get("refunds") or 0) for r in items),
+            "fees": round(-sum(r.get("amazon_fees") or 0 for r in items), 2),
+            "ppc": round(-ad_spend, 2),
+            "net_profit": round(item_net + ad_spend, 2),
         }
 
     fmt = lambda d: d.strftime("%d/%m/%Y")
@@ -477,6 +511,10 @@ def period_overview(db: Session, owner_id: int) -> dict:
     mtd_agg = agg(month_start, today)
     last_month_agg = agg(prev_month_start, prev_month_end)
     prev_prev_month_agg = agg(prev_prev_month_start, prev_prev_month_end)
+
+    if not any(a["sales"] or a["orders"] or a["units"]
+               for a in (today_agg, yesterday_agg, mtd_agg, last_month_agg, prev_prev_month_agg)):
+        return {"periods": []}
 
     # So MTD với cùng số ngày đầu của tháng trước
     mtd_compare_end = min(prev_month_end, prev_month_start + timedelta(days=days_elapsed - 1))
