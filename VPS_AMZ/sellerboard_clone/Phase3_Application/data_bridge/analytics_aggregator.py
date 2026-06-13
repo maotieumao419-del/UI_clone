@@ -136,11 +136,43 @@ def get_dashboard_kpis(db, owner_id: int, start_date, end_date,
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# B. get_sku_performance — bảng "Products" (GROUP BY asin, sku)
+# B1. _split_amazon_fees — chia amazon_fees (tổng, ÂM) thành referral_fee/fba_fee
+#     ước tính theo SellerVision fee model (referral ~16.5% doanh thu, phần còn
+#     lại là fba_fee) — chỉ để hiển thị cây P&L (Mức 6A), không ảnh hưởng số
+#     tổng (referral_fee + fba_fee == amazon_fees luôn đúng).
+# ══════════════════════════════════════════════════════════════════════════════
+def _split_amazon_fees(sales: float, amazon_fees: float) -> dict:
+    referral_fee = -round(abs(sales) * 0.165, 2)
+    # Không để referral_fee "vượt" tổng phí (trường hợp phí thực tế thấp hơn ước tính)
+    if abs(referral_fee) > abs(amazon_fees):
+        referral_fee = amazon_fees
+    fba_fee = round(amazon_fees - referral_fee, 2)
+    return {"referral_fee": referral_fee, "fba_fee": fba_fee}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# B2. _product_lookup — map (asin, sku) -> {image_url, fba_stock} từ bảng products
+#     (SP-API Catalog Items, Phase 1). Dùng cho product_info ở Mức 8.
+# ══════════════════════════════════════════════════════════════════════════════
+def _product_lookup(db, owner_id: int) -> dict:
+    from sqlalchemy import select
+    from app.models import Product
+
+    rows = db.execute(
+        select(Product.asin, Product.sku, Product.image_url, Product.current_stock)
+        .where(Product.owner_id == owner_id)
+    ).all()
+    return {(r.asin, r.sku): {"image_url": r.image_url, "fba_stock": int(r.current_stock or 0)}
+            for r in rows}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# B3. get_sku_performance — bảng "Products" (GROUP BY asin, sku)
 # ══════════════════════════════════════════════════════════════════════════════
 def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
     """SUM(NEW_summary_products) GROUP BY (asin, sku) cho khoảng [start_date, end_date]
-    (chỉ các bản ghi NGÀY: period_start == period_end). Trả về list dict cho tab Products."""
+    (chỉ các bản ghi NGÀY: period_start == period_end). Trả về list dict lồng nhau
+    (product_info / metrics / detailed_pnl) cho tab Products — kiến trúc 8-Level."""
     from sqlalchemy import func, select
     from app.models import SummaryProduct
 
@@ -174,33 +206,57 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
         .order_by(func.sum(SummaryProduct.net_profit).desc())
     ).all()
 
+    products = _product_lookup(db, owner_id)
+
     out: list[dict] = []
     for r in rows:
         units = int(r.units or 0)
         sales = float(r.sales or 0.0)
         net_profit = float(r.net_profit or 0.0)
         cogs = float(r.cost_of_goods or 0.0)
+        promo = round(float(r.promo or 0.0), 2)
+        ads = round(float(r.ads or 0.0), 2)
+        refund_cost = round(float(r.refund_cost or 0.0), 2)
+        amazon_fees = round(float(r.amazon_fees or 0.0), 2)
+        shipping = round(float(r.shipping or 0.0), 2)
+
+        info = products.get((r.asin, r.sku), {})
+
         out.append({
-            "asin": r.asin,
-            "sku": r.sku,
-            "product": r.product or r.sku,
-            "units": units,
-            "refunds": int(r.refunds or 0),
-            "sales": round(sales, 2),
-            "promo": round(float(r.promo or 0.0), 2),
-            "ads": round(float(r.ads or 0.0), 2),
-            "refund_cost": round(float(r.refund_cost or 0.0), 2),
-            "amazon_fees": round(float(r.amazon_fees or 0.0), 2),
-            "cost_of_goods": round(cogs, 2),
-            "shipping": round(float(r.shipping or 0.0), 2),
-            "gross_profit": round(float(r.gross_profit or 0.0), 2),
-            "net_profit": round(net_profit, 2),
-            "estimated_payout": round(float(r.estimated_payout or 0.0), 2),
-            "expenses": round(float(r.expenses or 0.0), 2),
-            "average_sales_price": round(sales / units, 2) if units else 0.0,
-            "margin_pct": round(net_profit / sales * 100, 1) if sales else 0.0,
-            "roi_pct": round(net_profit / abs(cogs) * 100, 1) if cogs else 0.0,
-            "bsr": r.bsr,
+            "identifier": r.sku,
+            "product_info": {
+                "asin": r.asin,
+                "sku": r.sku,
+                "title": r.product or r.sku,
+                "image_url": info.get("image_url"),
+                # SellerVision hiện chỉ quản lý tồn kho FBA (Product.current_stock từ
+                # SP-API Inventory) -> nhãn cố định, không có nguồn dữ liệu FBM riêng.
+                "fulfillment_channel": "FBA",
+                "fba_stock": info.get("fba_stock", 0),
+            },
+            "metrics": {
+                "units": units,
+                "refunds": int(r.refunds or 0),
+                "sales": round(sales, 2),
+                "cogs": round(cogs, 2),
+                "ads": ads,
+                "amazon_fees": amazon_fees,
+                "net_profit": round(net_profit, 2),
+                "average_sales_price": round(sales / units, 2) if units else 0.0,
+                "margin_pct": round(net_profit / sales * 100, 1) if sales else 0.0,
+                "roi_pct": round(net_profit / abs(cogs) * 100, 1) if cogs else 0.0,
+                "bsr": r.bsr,
+            },
+            "detailed_pnl": {
+                "sales": {"total": round(sales, 2)},
+                "cogs": {"total": round(cogs, 2)},
+                "amazon_fees": {"total": amazon_fees, "children": _split_amazon_fees(sales, amazon_fees)},
+                "ads": {"total": ads},
+                "promo": {"total": promo},
+                "refund_cost": {"total": refund_cost},
+                "shipping": {"total": shipping},
+                "net_profit": {"total": round(net_profit, 2)},
+            },
         })
     return out
 
@@ -210,7 +266,8 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
 # ══════════════════════════════════════════════════════════════════════════════
 def get_order_items_details(db, owner_id: int, start_date, end_date) -> list[dict]:
     """NEW_summary_order_items trong khoảng [start_date, end_date], mới nhất trước,
-    tối đa 1000 dòng — cho tab Orders."""
+    tối đa 1000 dòng — cho tab Order Items. Mỗi dòng kèm `order_number_raw`
+    (chuỗi ghép Order ID / Trạng thái / COG / FBA) để Mức 8 parse hiển thị."""
     from sqlalchemy import select
     from app.models import SummaryOrderItem
 
@@ -224,7 +281,15 @@ def get_order_items_details(db, owner_id: int, start_date, end_date) -> list[dic
         .order_by(SummaryOrderItem.order_date.desc())
         .limit(1000)
     ).all()
-    return [row.to_dict() for row in rows]
+
+    out: list[dict] = []
+    for row in rows:
+        d = row.to_dict()
+        status = row.order_status or "Pending"
+        d["order_number_raw"] = f"{row.order_number} / {status} / COG: {row.cost_of_goods:g} / FBA"
+        d["order_date"] = row.order_date.strftime("%d.%m.%Y") if row.order_date else None
+        out.append(d)
+    return out
 
 
 # ── CLI test: python Phase3_Application/data_bridge/analytics_aggregator.py ───

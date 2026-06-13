@@ -210,7 +210,12 @@ def main():
     
     # Establish connection with autocommit enabled to allow CLUSTER commands
     try:
-        with psycopg.connect(url, autocommit=True, connect_timeout=30) as conn:
+        # prepare_threshold=None: tắt server-side prepared statements — cần
+        # thiết khi DATABASE_URL đi qua Supabase pooler (transaction-mode,
+        # port 6543), nơi PgBouncer có thể route sang backend connection đã
+        # có sẵn prepared statement cùng tên ("_pg3_0"...) gây lỗi
+        # "prepared statement already exists".
+        with psycopg.connect(url, autocommit=True, connect_timeout=30, prepare_threshold=None) as conn:
             for config in TABLES_CONFIG:
                 table_name = config["table"]
                 print(f"🧹 Cleaning {table_name}...")

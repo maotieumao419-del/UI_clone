@@ -80,27 +80,53 @@ const App = {
 
   // ---------- Dashboard ----------
   async loadDashboard() {
-    const days = $('range-select').value;
-    const [d] = await Promise.all([
-      api('/api/analytics/dashboard?days=' + days),
+    await Promise.all([
       this.loadPeriods(),
+      this.loadProductPerf(),
     ]);
-    // Charts
-    this.drawSales(d.timeseries);
-    this.drawMarket(d.marketplace_breakdown);
-    // Top products (bảng hiệu suất chi tiết kiểu Sellerboard)
-    $('top-products').innerHTML = d.top_products.map(p => `<tr class="border-b last:border-0 hover:bg-slate-50">
-      <td class="py-2"><div class="font-medium">${p.title}</div><div class="text-xs text-slate-400">${p.asin}</div></td>
+  },
+  // Quy đổi key kỳ (chọn ở dropdown) -> {start, end} dạng YYYY-MM-DD,
+  // theo cùng định nghĩa kỳ với 5 thẻ tổng quan ở profit.period_overview().
+  _periodRange(key) {
+    const now = new Date();
+    const fmt = (d) => d.toISOString().slice(0, 10);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (key === 'today') return { start: fmt(today), end: fmt(today) };
+    if (key === 'yesterday') {
+      const y = new Date(today); y.setDate(y.getDate() - 1);
+      return { start: fmt(y), end: fmt(y) };
+    }
+    if (key === 'mtd') {
+      const ms = new Date(today.getFullYear(), today.getMonth(), 1);
+      return { start: fmt(ms), end: fmt(today) };
+    }
+    if (key === 'last_month') {
+      const ms = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const me = new Date(today.getFullYear(), today.getMonth(), 0);
+      return { start: fmt(ms), end: fmt(me) };
+    }
+    // N ngày gần nhất (7/30/90)
+    const days = Number(key) || 30;
+    const start = new Date(today); start.setDate(start.getDate() - (days - 1));
+    return { start: fmt(start), end: fmt(today) };
+  },
+  // Bảng hiệu suất sản phẩm chi tiết kiểu Sellerboard (NEW_summary_products)
+  async loadProductPerf() {
+    const { start, end } = this._periodRange($('range-select').value);
+    const d = await api(`/api/analytics/dashboard/summary?tab=products&start=${start}&end=${end}`);
+    $('top-products').innerHTML = (d.products || []).map(p => `<tr class="border-b last:border-0 hover:bg-slate-50">
+      <td class="py-2"><div class="font-medium">${p.product}</div><div class="text-xs text-slate-400">${p.asin} · ${p.sku}</div></td>
       <td class="text-right">${fmtNum(p.units)}</td>
       <td class="text-right ${p.refunds>0?'text-red-500':'text-slate-400'}">${fmtNum(p.refunds)}</td>
       <td class="text-right">${fmtMoney(p.sales)}</td>
-      <td class="text-right text-slate-500">${fmtMoney(p.avg_selling_price)}</td>
-      <td class="text-right text-slate-500">${fmtMoney(p.ppc)}</td>
+      <td class="text-right text-slate-500">${fmtMoney(p.average_sales_price)}</td>
+      <td class="text-right ${p.ads<0?'text-red-500':'text-slate-500'}">${fmtMoney(p.ads)}</td>
       <td class="text-right text-slate-500">${fmtMoney(p.gross_profit)}</td>
       <td class="text-right font-semibold ${p.net_profit>=0?'text-green-600':'text-red-600'}">${fmtMoney(p.net_profit)}</td>
       <td class="text-right">${p.margin_pct}%</td>
       <td class="text-right">${p.roi_pct}%</td>
-      <td class="text-right text-slate-500">${p.bsr ? '#' + fmtNum(p.bsr) : '·'}</td></tr>`).join('') || '<tr><td class="py-4 text-slate-400">Chưa có dữ liệu</td></tr>';
+      <td class="text-right text-slate-500">${p.bsr ? '#' + fmtNum(p.bsr) : '·'}</td></tr>`).join('')
+      || '<tr><td colspan="11" class="py-4 text-slate-400 text-center">Chưa có dữ liệu cho kỳ này</td></tr>';
   },
   drawSales(ts) {
     const ctx = $('sales-chart');
