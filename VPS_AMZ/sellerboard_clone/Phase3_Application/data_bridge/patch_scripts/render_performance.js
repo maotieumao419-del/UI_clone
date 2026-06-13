@@ -4,10 +4,11 @@
  *
  * Cách hoạt động (KHÔNG sửa app.js gốc):
  *   - Nạp SAU app.js (patch_frontend.py chèn <script src="/static/render_performance.js">).
- *   - Ghi đè App.loadDashboard: gọi cùng API GET /api/analytics/dashboard?days=N,
- *     vẫn vẽ chart + thẻ kỳ như cũ, nhưng render bảng theo layout mới.
- *   - Nếu payload KHÔNG có khoá mới (backend chưa vá) hoặc có lỗi bất kỳ
- *     -> tự động fallback về hàm loadDashboard gốc, UI cũ không bị ảnh hưởng.
+ *   - Ghi đè App.loadDashboard: gọi GET /api/analytics/dashboard/summary
+ *     (tab=products, start/end tính từ range-select), thẻ kỳ vẫn qua loadPeriods()
+ *     như cũ, và render bảng theo layout mới (renderGrid).
+ *   - Backend Phase 3 không còn trả timeseries/marketplace_breakdown -> các chart
+ *     sales/market được vẽ với dữ liệu rỗng (không lỗi, chỉ tạm trống).
  */
 (function () {
   'use strict';
@@ -52,7 +53,7 @@
   // Ảnh thumb 50x50 từ ASIN (widget Amazon); lỗi ảnh -> hiện ô chữ cái đầu
   // của title (render sẵn ở trạng thái ẩn, onerror chỉ bật/tắt class).
   function thumb(p) {
-    var initial = esc((p.title || '?').charAt(0).toUpperCase());
+    var initial = esc((p.title || p.product || '?').charAt(0).toUpperCase());
     var fallback = '<div class="w-10 h-10 rounded-lg bg-slate-200 hidden ' +
       'items-center justify-center text-slate-500 text-xs font-bold">' + initial + '</div>';
     if (!p.asin) {
@@ -71,10 +72,26 @@
     '<th class="text-right px-2">Số lượng</th>' +
     '<th class="text-right px-2">Doanh thu</th>' +
     '<th class="text-right px-2">Chi phí gốc (COGS)</th>' +
-    '<th class="text-right px-2">Phí sàn (Comm/FBA)</th>' +
+    '<th class="text-right px-2">Phí Amazon</th>' +
     '<th class="text-right px-2">Quảng cáo</th>' +
     '<th class="text-right px-2">Lợi nhuận ròng</th>' +
     '<th class="text-right px-2">Biên LN</th></tr>';
+
+  // Tổng hợp dòng tfoot từ danh sách sản phẩm (get_sku_performance trả về —
+  // không có sẵn khoá totals từ backend Phase 3).
+  function computeTotals(rows) {
+    var t = { quantity: 0, sales: 0, product_cost: 0, fees: 0, ad_spend: 0, net_profit: 0 };
+    rows.forEach(function (p) {
+      t.quantity += Number(p.units) || 0;
+      t.sales += Number(p.sales) || 0;
+      t.product_cost += Number(p.cost_of_goods) || 0;
+      t.fees += Number(p.amazon_fees) || 0;
+      t.ad_spend += Number(p.ads) || 0;
+      t.net_profit += Number(p.net_profit) || 0;
+    });
+    t.margin = t.sales ? (t.net_profit / t.sales * 100) : 0;
+    return t;
+  }
 
   // ---------- Render ma trận hiệu suất ----------
   function renderGrid(d) {
@@ -98,45 +115,43 @@
     }
 
     var html = rows.map(function (p) {
-      var fees = (Number(p.commission) || 0) + (Number(p.fba_fee) || 0);
+      var name = p.title || p.product || '';
+      var fees = Number(p.amazon_fees) || 0;
       return '<tr class="border-b last:border-0 hover:bg-gray-50 transition-colors">' +
         '<td class="py-2 px-2"><div class="flex items-center gap-2.5">' + thumb(p) +
           '<div class="min-w-0">' +
-            '<div class="font-medium max-w-[260px] truncate" title="' + esc(p.title) + '">' +
-              (esc(p.title) || '(không có tên)') + '</div>' +
+            '<div class="font-medium max-w-[260px] truncate" title="' + esc(name) + '">' +
+              (esc(name) || '(không có tên)') + '</div>' +
             '<div class="mt-0.5">' + badge(p.asin, 'ASIN') + badge(p.sku, 'SKU') + '</div>' +
           '</div></div></td>' +
         '<td class="text-right px-2">' + fmtNum(p.quantity != null ? p.quantity : p.units) + '</td>' +
         '<td class="text-right px-2"><div>' + fmtMoney(p.sales) + '</div>' +
-          '<div class="text-[10px] text-slate-400">' + fmtMoney(p.price != null ? p.price : p.avg_selling_price) + '/sp</div></td>' +
-        '<td class="text-right px-2 text-slate-600">' + fmtMoney(p.product_cost != null ? p.product_cost : p.cogs) + '</td>' +
+          '<div class="text-[10px] text-slate-400">' + fmtMoney(p.price != null ? p.price : p.average_sales_price) + '/sp</div></td>' +
+        '<td class="text-right px-2 text-slate-600">' + fmtMoney(p.product_cost != null ? p.product_cost : p.cost_of_goods) + '</td>' +
         '<td class="text-right px-2"><div class="text-slate-600">' + fmtMoney(fees) + '</div>' +
-          '<div class="text-[10px] text-slate-400">Comm ' + fmtMoney(p.commission) +
-          ' · FBA ' + fmtMoney(p.fba_fee) + ' · Promo ' + fmtMoney(p.promo) + '</div></td>' +
-        '<td class="text-right px-2 text-slate-600">' + fmtMoney(p.ad_spend != null ? p.ad_spend : p.ppc) + '</td>' +
+          '<div class="text-[10px] text-slate-400">Promo ' + fmtMoney(p.promo) + '</div></td>' +
+        '<td class="text-right px-2 text-slate-600">' + fmtMoney(p.ad_spend != null ? p.ad_spend : p.ads) + '</td>' +
         '<td class="text-right px-2">' + pnl(p.net_profit) + '</td>' +
         '<td class="text-right px-2">' + pnl(p.margin != null ? p.margin : p.margin_pct, true) + '</td></tr>';
     }).join('');
     tbody.innerHTML = html;
 
-    // Dòng tổng (tfoot) — tạo nếu chưa có
+    // Dòng tổng (tfoot) — tự tính từ danh sách sản phẩm
     try {
-      var t = d.totals || {};
-      if (table && t.sales != null) {
+      var t = d.totals || computeTotals(rows);
+      if (table) {
         var tfoot = table.querySelector('tfoot');
         if (!tfoot) { tfoot = document.createElement('tfoot'); table.appendChild(tfoot); }
         tfoot.className = 'border-t-2 bg-slate-50 font-semibold';
         tfoot.innerHTML = '<tr>' +
-          '<td class="py-2 px-2">Tổng (' + rows.length + ' SKU · ' + fmtNum(t.orders) + ' đơn)</td>' +
+          '<td class="py-2 px-2">Tổng (' + rows.length + ' SKU)</td>' +
           '<td class="text-right px-2">' + fmtNum(t.quantity) + '</td>' +
           '<td class="text-right px-2">' + fmtMoney(t.sales) + '</td>' +
           '<td class="text-right px-2">' + fmtMoney(t.product_cost) + '</td>' +
-          '<td class="text-right px-2">' + fmtMoney((t.commission || 0) + (t.fba_fee || 0)) + '</td>' +
+          '<td class="text-right px-2">' + fmtMoney(t.fees) + '</td>' +
           '<td class="text-right px-2">' + fmtMoney(t.ad_spend) + '</td>' +
           '<td class="text-right px-2">' + pnl(t.net_profit) + '</td>' +
           '<td class="text-right px-2">' + pnl(t.margin, true) + '</td></tr>';
-      } else {
-        removeTfoot(table);
       }
     } catch (e) { /* tfoot lỗi không chặn UI */ }
     return true;
@@ -149,52 +164,46 @@
     } catch (e) { /* bỏ qua */ }
   }
 
-  // ---------- Ghi đè App.loadDashboard (giữ bản gốc để fallback) ----------
+  // ---------- Ghi đè App.loadDashboard ----------
   function install() {
     if (!window.App || typeof window.App.loadDashboard !== 'function') {
       return false; // app.js chưa nạp xong
     }
-    var origLoad = window.App.loadDashboard.bind(window.App);
 
     window.App.loadDashboard = async function () {
       var sel = document.getElementById('range-select');
-      var days = sel ? sel.value : 30;
+      var days = sel ? (parseInt(sel.value, 10) || 30) : 30;
       var tbody = document.getElementById('top-products');
       try {
         if (tbody) {
           tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400">' +
-            'Đang tổng hợp dữ liệu hiệu suất từ Supabase...</td></tr>';
+            'Đang tổng hợp dữ liệu hiệu suất từ Local Database...</td></tr>';
         }
-        // 1 lần fetch duy nhất — dùng chung cho chart + bảng
+
+        // start/end theo range-select, tính theo giờ trình duyệt
+        var endDate = new Date();
+        var startDate = new Date();
+        startDate.setDate(endDate.getDate() - (days - 1));
+        var iso = function (dt) { return dt.toISOString().slice(0, 10); };
+
+        // 1 lần fetch duy nhất cho bảng Products + thẻ kỳ so sánh (Today/Yesterday/MTD...)
         var results = await Promise.all([
-          window.api('/api/analytics/dashboard?days=' + days),
-          // Thẻ kỳ so sánh (Today/Yesterday/MTD...) như bản gốc
+          window.api('/api/analytics/dashboard/summary?tab=products&start=' + iso(startDate) + '&end=' + iso(endDate)),
           typeof this.loadPeriods === 'function' ? this.loadPeriods() : null,
         ]);
         var d = results[0] || {};
 
-        // Vẽ chart như bản gốc — lỗi chart không được chặn bảng
+        // Backend Phase 3 chưa trả timeseries/marketplace_breakdown -> vẽ chart rỗng,
+        // không lỗi (lỗi chart không được chặn bảng).
         try { if (typeof this.drawSales === 'function') this.drawSales(d.timeseries || []); } catch (e) { console.warn('[Phase3] drawSales:', e); }
         try { if (typeof this.drawMarket === 'function') this.drawMarket(d.marketplace_breakdown || {}); } catch (e) { console.warn('[Phase3] drawMarket:', e); }
 
-        // Payload có khoá mới (backend đã vá)? -> render grid mới.
-        var hasNew = Array.isArray(d.top_products) &&
-          (d.top_products.length === 0 || (d.top_products[0] && 'margin' in d.top_products[0] && 'sku' in d.top_products[0]));
-        if (hasNew && d.status) {
-          renderGrid(d);
-        } else {
-          // Backend chưa vá -> render kiểu cũ bằng hàm gốc (fetch lại, an toàn)
-          console.info('[Phase3] Payload chưa có khoá mới — dùng renderer gốc.');
-          await origLoad();
-        }
+        renderGrid({ top_products: Array.isArray(d.products) ? d.products : [] });
       } catch (err) {
-        // Lỗi bất kỳ -> quay về hành vi gốc, KHÔNG đóng băng giao diện
-        console.error('[Phase3] render_performance lỗi, fallback bản gốc:', err);
-        try { await origLoad(); } catch (e2) {
-          if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-red-500">' +
-              'Lỗi tải dữ liệu: ' + esc(err && err.message) + '</td></tr>';
-          }
+        console.error('[Phase3] render_performance: lỗi tải dashboard:', err);
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-red-500">' +
+            'Lỗi tải dữ liệu: ' + esc(err && err.message) + '</td></tr>';
         }
       }
     };

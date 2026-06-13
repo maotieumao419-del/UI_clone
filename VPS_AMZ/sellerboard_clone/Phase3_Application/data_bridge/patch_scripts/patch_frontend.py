@@ -6,7 +6,7 @@ Kích hoạt ma trận hiệu suất sản phẩm trên giao diện:
      <script src="/static/render_performance.js"></script> NGAY SAU app.js.
 
 KHÔNG sửa app.js gốc — render_performance.js ghi đè App.loadDashboard lúc
-runtime và tự fallback về bản gốc nếu backend chưa vá / có lỗi.
+runtime để gọi /api/analytics/dashboard/summary (Phase 3) và render bảng mới.
 
 Chạy:
     cd ~/VPS_AMZ/sellerboard_clone

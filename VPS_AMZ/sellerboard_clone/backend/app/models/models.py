@@ -270,3 +270,62 @@ class SummaryProduct(Base):
     fee_state: Mapped[str] = mapped_column(String(20), default='NONE')
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
 
+
+class SummaryOrderItem(Base):
+    __tablename__ = "NEW_summary_order_items"
+
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    order_number: Mapped[str] = mapped_column(String(64), primary_key=True, default='')
+    sku: Mapped[str] = mapped_column(String(64), primary_key=True, default='')
+    asin: Mapped[str] = mapped_column(String(20), primary_key=True, default='')
+    row_type: Mapped[str] = mapped_column(String(10), primary_key=True, default='normal')
+
+    order_date: Mapped[date] = mapped_column(Date, index=True)
+    product: Mapped[str | None] = mapped_column(Text, nullable=True)
+    units: Mapped[int] = mapped_column(Integer, default=0)
+    refunds: Mapped[int] = mapped_column(Integer, default=0)
+    sales: Mapped[float] = mapped_column(Float, default=0.0)
+    promo: Mapped[float] = mapped_column(Float, default=0.0)
+    sellable_quota: Mapped[float | None] = mapped_column(Float, nullable=True)
+    refund_cost: Mapped[float] = mapped_column(Float, default=0.0)
+    amazon_fees: Mapped[float] = mapped_column(Float, default=0.0)
+    cost_of_goods: Mapped[float] = mapped_column(Float, default=0.0)
+    shipping: Mapped[float] = mapped_column(Float, default=0.0)
+    gross_profit: Mapped[float] = mapped_column(Float, default=0.0)
+    expenses: Mapped[float] = mapped_column(Float, default=0.0)
+    net_profit: Mapped[float] = mapped_column(Float, default=0.0)
+    margin: Mapped[float | None] = mapped_column(Float, nullable=True)
+    roi: Mapped[float | None] = mapped_column(Float, nullable=True)
+    coupon: Mapped[float] = mapped_column(Float, default=0.0)
+    order_status: Mapped[str] = mapped_column(String(40), default='')
+    price_source: Mapped[str] = mapped_column(String(20), default='ACTUAL')
+    fee_state: Mapped[str] = mapped_column(String(20), default='NONE')
+
+    def to_dict(self) -> dict:
+        return {
+            "order_number": self.order_number,
+            "order_date": self.order_date.isoformat() if self.order_date else None,
+            "product": self.product,
+            "asin": self.asin,
+            "sku": self.sku,
+            "units": self.units,
+            "refunds": self.refunds,
+            "sales": self.sales,
+            "promo": self.promo,
+            "sellable_quota": self.sellable_quota,
+            "refund_cost": self.refund_cost,
+            "amazon_fees": self.amazon_fees,
+            "cost_of_goods": self.cost_of_goods,
+            "shipping": self.shipping,
+            "gross_profit": self.gross_profit,
+            "expenses": self.expenses,
+            "net_profit": self.net_profit,
+            "margin": self.margin,
+            "roi": self.roi,
+            "coupon": self.coupon,
+            "row_type": self.row_type,
+            "order_status": self.order_status,
+            "price_source": self.price_source,
+            "fee_state": self.fee_state,
+        }
+

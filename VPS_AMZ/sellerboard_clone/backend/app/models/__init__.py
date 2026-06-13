@@ -11,4 +11,5 @@ from .models import (  # noqa: F401
     SettlementEntry,
     AggregatedDaily,
     SummaryProduct,
+    SummaryOrderItem,
 )

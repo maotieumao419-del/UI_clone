@@ -1,20 +1,14 @@
 """Phase 3 — patch_dashboard.py
-Vá AN TOÀN backend/app/routers/dashboard.py để endpoint
-GET /api/analytics/dashboard?days=N trả thêm ma trận hiệu suất sản phẩm
-(top_products với sku/quantity/price/product_cost/commission/fba_fee/promo/
-ad_spend/net_profit/margin) từ Phase3_Application/data_bridge/analytics_aggregator.py.
+Ghi đè AN TOÀN backend/app/routers/dashboard.py bằng phiên bản Phase 3:
+router /api/analytics chỉ còn /dashboard/summary (KPIs + bảng Products/Orders,
+đọc 100% từ SQLite/Postgres local qua analytics_aggregator.py), /ltv, /bsr.
+Các route /dashboard và /periods cũ (Supabase-based) đã bị xoá.
 
 Nguyên tắc:
-  - KHÔNG sửa tay file gốc: script này dùng try_replace (khớp chuỗi chính xác,
-    thay đúng 1 lần); nếu không khớp (file đã bị đổi) -> báo lỗi và DỪNG,
-    không ghi gì cả.
-  - Luôn backup file gốc vào Phase3_Application/data_bridge/patch_scripts/backups/ trước khi ghi.
-  - Tương thích ngược: vẫn gọi profit.dashboard() cũ cho kpis/timeseries/
-    marketplace_breakdown (chart không đổi); chỉ thay mảng top_products bằng
-    bản Phase 3 (mỗi dòng chứa CẢ khoá cũ lẫn khoá mới); nếu Phase 3 lỗi
-    -> giữ nguyên payload cũ 100%.
-  - Bỏ response_model=DashboardResponse trên route này (Pydantic sẽ cắt mất
-    các khoá mới nếu giữ) — schema import vẫn giữ nguyên cho các route khác.
+  - Luôn backup file gốc vào Phase3_Application/data_bridge/patch_scripts/backups/
+    trước khi ghi đè.
+  - Sau khi ghi: kiểm tra cú pháp bằng py_compile — lỗi thì tự khôi phục backup.
+  - Idempotent: nếu file đích đã đúng nội dung Phase 3 -> không làm gì thêm.
 
 Chạy:
     cd ~/VPS_AMZ/sellerboard_clone
@@ -41,51 +35,71 @@ ROOT = PHASE3_DIR.parent.parent.parent
 TARGET = ROOT / "backend" / "app" / "routers" / "dashboard.py"
 BACKUP_DIR = PHASE3_DIR / "backups"
 
-# ── Đoạn mã GỐC cần thay (phải khớp chính xác 100%) ──────────────────────────
-OLD_ROUTE = '''@router.get("/dashboard", response_model=DashboardResponse)
-def get_dashboard(days: int = Query(30, ge=1, le=365),
-                  db: Session = Depends(get_db), current: User = Depends(get_current_user)):
-    return profit.dashboard(db, current.id, days=days)'''
+# ── Nội dung MỚI (Phase 3) — phải khớp 100% với backend/app/routers/dashboard.py ──
+NEW_DASHBOARD_PY = '''"""Router phân tích: dashboard tổng hợp (SQLite/Postgres local), LTV, BSR monitor."""
+import sys
+from datetime import date
+from pathlib import Path
 
-# ── Đoạn mã MỚI (Phase 3) ─────────────────────────────────────────────────────
-NEW_ROUTE = '''@router.get("/dashboard")
-def get_dashboard(days: int = Query(30, ge=1, le=365),
-                  db: Session = Depends(get_db), current: User = Depends(get_current_user)):
-    """Phase 3: payload cũ (kpis/timeseries/marketplace_breakdown giữ nguyên cho
-    chart) + top_products được thay bằng ma trận hiệu suất tính từ Supabase
-    (mỗi dòng chứa cả khoá cũ lẫn khoá mới -> tương thích ngược).
-    Phase 3 lỗi -> trả nguyên payload cũ, dashboard không bao giờ sập."""
-    data = profit.dashboard(db, current.id, days=days)
-    try:
-        import sys as _sys
-        from pathlib import Path as _Path
-        _root = str(_Path(__file__).resolve().parents[3])
-        if _root not in _sys.path:
-            _sys.path.insert(0, _root)
-        from Phase3_Application.data_bridge.analytics_aggregator import aggregate_product_performance
-        p3 = aggregate_product_performance(days=days)
-        data["status"] = p3.get("status", "success")
-        data["period_days"] = days
-        data["range"] = p3.get("range", {})
-        data["totals"] = p3.get("totals", {})
-        data["top_products"] = p3.get("top_products", data.get("top_products", []))
-    except Exception as exc:  # noqa: BLE001 — Phase 3 không được làm gãy UI cũ
-        import logging
-        logging.getLogger(__name__).warning("[Phase3] aggregator loi: %s", exc)
-        data.setdefault("status", "legacy")
-        data["period_days"] = days
-    return data'''
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
+
+from ..database import get_db
+from ..deps import get_current_user
+from ..models import User
+from ..services import profit
+
+_ROOT = Path(__file__).resolve().parents[3]            # .../sellerboard_clone
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+from Phase3_Application.data_bridge.analytics_aggregator import (  # noqa: E402
+    get_dashboard_kpis, get_order_items_details, get_sku_performance,
+)
+
+router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
 
-def try_replace(text: str, old: str, new: str, label: str) -> str:
-    """Thay old -> new đúng 1 lần; raise nếu không tìm thấy hoặc trùng lặp."""
-    n = text.count(old)
-    if n == 0:
-        raise SystemExit(f"[LỖI] Không tìm thấy đoạn mã gốc ({label}) — file đã bị "
-                         f"sửa khác bản mong đợi. KHÔNG ghi gì cả.\nTarget: {TARGET}")
-    if n > 1:
-        raise SystemExit(f"[LỖI] Đoạn mã ({label}) xuất hiện {n} lần — không an toàn để vá.")
-    return text.replace(old, new, 1)
+@router.get("/dashboard/summary")
+def get_dashboard_summary(
+    tab: str = Query("products"),
+    start: date = Query(...),
+    end: date = Query(...),
+    compare_start: date | None = Query(None),
+    compare_end: date | None = Query(None),
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    """All-in-One Dashboard: thẻ KPI (so sánh kỳ trước) + bảng chi tiết theo tab.
+
+    - tab=products (mặc định) -> bảng SKU performance (GROUP BY asin, sku).
+    - tab=orders               -> ledger giao dịch thô NEW_summary_order_items.
+    """
+    result = {
+        "kpis": get_dashboard_kpis(db, current.id, start, end, compare_start, compare_end),
+    }
+    if tab == "orders":
+        result["orders"] = get_order_items_details(db, current.id, start, end)
+    else:
+        result["products"] = get_sku_performance(db, current.id, start, end)
+    return result
+
+
+@router.get("/periods")
+def get_periods(db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    """5 thẻ tổng quan kiểu Sellerboard (Today/Yesterday/MTD/Forecast/Last month)."""
+    return profit.period_overview(db, current.id)
+
+
+@router.get("/ltv")
+def get_ltv(db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    return profit.customer_ltv(db, current.id)
+
+
+@router.get("/bsr")
+def get_bsr(db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    return profit.bsr_monitor(db, current.id)
+'''
 
 
 def main() -> None:
@@ -97,14 +111,12 @@ def main() -> None:
         raise SystemExit(f"[LỖI] Không thấy {TARGET}")
     text = TARGET.read_text(encoding="utf-8")
 
-    if NEW_ROUTE.splitlines()[0] in text and "aggregate_product_performance" in text:
-        print("[OK] dashboard.py ĐÃ được vá Phase 3 trước đó — không làm gì thêm.")
+    if text == NEW_DASHBOARD_PY:
+        print("[OK] dashboard.py ĐÃ ở trạng thái Phase 3 — không làm gì thêm.")
         return
 
-    patched = try_replace(text, OLD_ROUTE, NEW_ROUTE, "route /dashboard")
-
     if args.check:
-        print("[CHECK] Đoạn mã gốc khớp chính xác — sẵn sàng vá (chưa ghi gì).")
+        print("[CHECK] dashboard.py khác nội dung Phase 3 — sẵn sàng ghi đè (chưa ghi gì).")
         return
 
     # Backup trước khi ghi
@@ -114,7 +126,7 @@ def main() -> None:
     shutil.copy2(TARGET, backup)
     print(f"[BACKUP] {backup}")
 
-    TARGET.write_text(patched, encoding="utf-8")
+    TARGET.write_text(NEW_DASHBOARD_PY, encoding="utf-8")
     # Kiểm tra cú pháp ngay — lỗi thì khôi phục backup tự động
     try:
         py_compile.compile(str(TARGET), doraise=True)
@@ -122,7 +134,7 @@ def main() -> None:
         shutil.copy2(backup, TARGET)
         raise SystemExit(f"[LỖI] File vá không compile được, ĐÃ khôi phục backup.\n{exc}")
 
-    print(f"[OK] Đã vá {TARGET.relative_to(ROOT)}")
+    print(f"[OK] Đã ghi đè {TARGET.relative_to(ROOT)} (Phase 3)")
     print("     -> Khởi động lại backend (systemctl restart / gunicorn reload) để áp dụng.")
     print("     -> Khôi phục khi cần: python Phase3_Application/data_bridge/patch_scripts/rollback.py")
 

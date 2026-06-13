@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 T_ORDERS = "NEW_sp_orders"
 T_ITEMS  = "NEW_sp_order_items"
 T_SUMMARY = "NEW_summary_products"
+T_SUMMARY_ITEMS = "NEW_summary_order_items"
 PAGE = 100
 
 
@@ -179,7 +180,8 @@ def sync_summary_products(db, sb, owner_id: int, since_utc: datetime) -> dict:
     """Supabase NEW_summary_products -> SQLite NEW_summary_products.
     Sử dụng ON CONFLICT (owner_id, period_start, period_end, asin, sku) DO UPDATE SET."""
     from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-    from app.models import SummaryProduct, Base
+    from app.models import SummaryProduct
+    from app.database import Base
     
     # Đảm bảo bảng tồn tại ở SQLite
     Base.metadata.create_all(bind=db.bind)
@@ -273,6 +275,90 @@ def sync_summary_products(db, sb, owner_id: int, since_utc: datetime) -> dict:
     return stats
 
 
+def sync_summary_order_items(db, sb, owner_id: int, since_utc: datetime) -> dict:
+    """Supabase NEW_summary_order_items -> SQLite NEW_summary_order_items.
+    Sử dụng ON CONFLICT (owner_id, order_number, sku, asin, row_type) DO UPDATE SET."""
+    from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+    from app.models import SummaryOrderItem
+    from app.database import Base
+
+    # Đảm bảo bảng tồn tại ở SQLite
+    Base.metadata.create_all(bind=db.bind)
+
+    stats = {"inserted_or_updated": 0, "skipped": 0, "errors": 0}
+    offset = 0
+
+    cols_to_update = [
+        c.name for c in SummaryOrderItem.__table__.columns
+        if c.name not in ('owner_id', 'order_number', 'sku', 'asin', 'row_type')
+    ]
+
+    since_date_str = since_utc.date().isoformat()
+
+    while True:
+        resp = (sb.table(T_SUMMARY_ITEMS)
+                .select("*")
+                .eq("owner_id", owner_id)
+                .gte("order_date", since_date_str)
+                .order("order_date")
+                .range(offset, offset + PAGE - 1).execute())
+
+        rows = resp.data or []
+        if not rows:
+            break
+
+        try:
+            with db.begin_nested():
+                for row in rows:
+                    order_date = date.fromisoformat(row["order_date"])
+
+                    row_dict = {
+                        "owner_id": owner_id,
+                        "order_number": row.get("order_number") or "",
+                        "sku": row.get("sku") or "",
+                        "asin": row.get("asin") or "",
+                        "row_type": row.get("row_type") or "normal",
+                        "order_date": order_date,
+                        "product": row.get("product"),
+                        "units": row.get("units") or 0,
+                        "refunds": row.get("refunds") or 0,
+                        "sales": row.get("sales") or 0.0,
+                        "promo": row.get("promo") or 0.0,
+                        "sellable_quota": row.get("sellable_quota"),
+                        "refund_cost": row.get("refund_cost") or 0.0,
+                        "amazon_fees": row.get("amazon_fees") or 0.0,
+                        "cost_of_goods": row.get("cost_of_goods") or 0.0,
+                        "shipping": row.get("shipping") or 0.0,
+                        "gross_profit": row.get("gross_profit") or 0.0,
+                        "expenses": row.get("expenses") or 0.0,
+                        "net_profit": row.get("net_profit") or 0.0,
+                        "margin": row.get("margin"),
+                        "roi": row.get("roi"),
+                        "coupon": row.get("coupon") or 0.0,
+                        "order_status": row.get("order_status") or "",
+                        "price_source": row.get("price_source") or "ACTUAL",
+                        "fee_state": row.get("fee_state") or "NONE",
+                    }
+
+                    stmt = sqlite_insert(SummaryOrderItem).values(row_dict)
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['owner_id', 'order_number', 'sku', 'asin', 'row_type'],
+                        set_={col: stmt.excluded[col] for col in cols_to_update}
+                    )
+                    db.execute(stmt)
+                    stats["inserted_or_updated"] += 1
+            db.commit()
+            print(f"  [Bridge] Summary order items offset {offset}: +{len(rows)} rows OK")
+        except Exception as exc:
+            stats["errors"] += 1
+            db.rollback()
+            logger.warning("[Bridge] Lỗi trang summary order items offset %s: %s — rollback.", offset, exc)
+
+        offset += PAGE
+        del rows
+        gc.collect()
+
+    return stats
 
 
 
@@ -284,10 +370,30 @@ def main() -> int:
     ap.add_argument("--days", type=int, default=30, help="Đồng bộ N ngày gần nhất (mặc định 30)")
     args = ap.parse_args()
 
-    from app.database import SessionLocal
+    from app.database import SessionLocal, Base
+    from sqlalchemy import select
+    from app.models import User
+    
     sb = _get_supabase()
     db = SessionLocal()
     try:
+        # Ensure tables exist
+        Base.metadata.create_all(bind=db.bind)
+        
+        # Seed demo user if no users exist
+        if db.scalar(select(User).limit(1)) is None:
+            from app.core.security import hash_password
+            demo_user = User(
+                id=1,
+                email="demo@sellervision.io",
+                full_name="Người bán Demo",
+                hashed_password=hash_password("demo1234"),
+                consent={"analytics": True, "marketing": False, "data_sharing": False},
+            )
+            db.add(demo_user)
+            db.commit()
+            print("[Bridge] Empty database detected. Seeded demo user 'demo@sellervision.io' with ID 1.")
+            
         owner_id = get_owner_id(db, args.seller)      # Strict Mapping — lỗi là dừng
         since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=args.days)
         print(f"[Bridge] Seller '{args.seller}' -> owner_id={owner_id}; từ {since:%Y-%m-%d}")
@@ -298,6 +404,10 @@ def main() -> int:
         print(f"[Bridge] Bắt đầu đồng bộ NEW_summary_products...")
         summary_stats = sync_summary_products(db, sb, owner_id, since)
         print(f"[Bridge] Đồng bộ NEW_summary_products hoàn tất: {summary_stats}")
+
+        print(f"[Bridge] Bắt đầu đồng bộ NEW_summary_order_items...")
+        summary_items_stats = sync_summary_order_items(db, sb, owner_id, since)
+        print(f"[Bridge] Đồng bộ NEW_summary_order_items hoàn tất: {summary_items_stats}")
 
         # Tính COGS FIFO đúng 1 lần SAU khi commit xong toàn bộ
         try:

@@ -406,7 +406,8 @@ def _fetch_refunds(sb, start_utc, end_utc) -> list[dict]:
         return fetch_all(lambda: (
             sb.table(T_REFUNDS)
             .select("order_id,asin,sku,posted_date,quantity_returned,"
-                    "refund_principal,refund_commission,refunded_referral_fee")
+                    "refund_principal,refund_commission,refunded_referral_fee,"
+                    "refund_promotion,return_disposition")
             .gte("posted_date", start_utc.isoformat() + "Z")
             .lte("posted_date", end_utc.isoformat() + "Z")
         ))
@@ -658,25 +659,70 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
         item_rows.append(row.to_row())
 
     # ── Summary_Order_Items: dòng return (gộp theo order+asin+sku) ───────────
+    # Nạp fee_cache để lấy tỷ lệ referral gốc tính phí phạt 20%
+    fee_cache = _load_fee_cache(sb)
+
     ref_agg: dict[tuple[str, str, str], dict] = {}
     for r in refunds:
         key = (r.get("order_id") or "", r.get("asin") or "", r.get("sku") or "")
-        agg = ref_agg.setdefault(key, {"qty": 0, "cost": 0.0, "date": ""})
+        agg = ref_agg.setdefault(key, {
+            "qty": 0, "refund_principal": 0.0, "refund_promo": 0.0, 
+            "date": "", "disposition": r.get("return_disposition") or "Sellable"
+        })
         agg["qty"] += int(r.get("quantity_returned") or 1)
-        agg["cost"] += (_float(r.get("refund_principal"))
-                        + _float(r.get("refund_commission"))
-                        + _float(r.get("refunded_referral_fee")))
+        agg["refund_principal"] += _float(r.get("refund_principal"))
+        agg["refund_promo"] += _float(r.get("refund_promotion", 0.0))
+        
+        # Nếu có bất kỳ item nào bị hỏng, ghi nhận cả cục là Damaged để siết COGS
+        disp = (r.get("return_disposition") or "").lower()
+        if disp in ["customerdamaged", "defective", "unsellable"]:
+            agg["disposition"] = "Damaged"
+            
         posted = cfg.parse_iso(r.get("posted_date"))
         if posted:
             agg["date"] = cfg.to_marketplace_local(posted).date().isoformat()
+
     for (oid, asin, sku), agg in ref_agg.items():
-        cost = round(agg["cost"], 2)
+        qty = agg["qty"]
+        
+        # 1. Đảo ngược Doanh thu (Sales & Promo)
+        sales = -abs(agg["refund_principal"])
+        promo = abs(agg["refund_promo"])  # DƯƠNG: Trả lại khoản tiền promo khách từng xài
+        
+        # 2. Xử lý Amazon Fees (Referral Refund + Admin Fee Penalty)
+        m = fee_cache.get(sku, {})
+        rate = m.get("referral_rate") if m.get("referral_rate") is not None else DEFAULT_REFERRAL_RATE
+        
+        original_referral = abs(sales * rate)
+        admin_fee = min(original_referral * 0.20, 5.00)  # Phạt 20% tối đa $5
+        # Amazon trả lại tiền cho seller (+) sau khi đã trừ phạt
+        amazon_fees = round(original_referral - admin_fee, 2) 
+        
+        # 3. Xử lý Giá vốn (COGS) theo tình trạng nhập kho
+        try:
+            ref_date = cfg.parse_iso(agg["date"] + "T00:00:00Z")
+        except:
+            ref_date = cfg.now_marketplace()
+        
+        unit_cogs = abs(cfg.unit_cogs(cogs_map, sku, ref_date))
+        if agg["disposition"].lower() == "sellable":
+            cost_of_goods = round(unit_cogs * qty, 2)  # (+) Hàng về kho an toàn, hoàn lại COGS
+        else:
+            cost_of_goods = 0.0  # Hỏng/Mất trắng -> KHÔNG HOÀN COGS (Chịu khoản lỗ gốc)
+
+        # 4. Chốt số PnL dòng Refund
+        shipping = 0.0
+        gross = round(sales + promo + amazon_fees + cost_of_goods + shipping, 2)
+        net = gross
+        
         item_rows.append(SummaryOrderItem(
             order_number=oid, order_date=agg["date"],
-            product=title_by_key.get((asin, sku), ""), asin=asin, sku=sku,
-            refunds=agg["qty"], refund_cost=cost,
-            gross_profit=cost, net_profit=cost, row_type="return",
-            order_status="Return",
+            product=title_by_key.get((asin, sku), f"Refund {sku}"), asin=asin, sku=sku,
+            refunds=qty, units=0,  # units = 0 để không xô lệch doanh số bán ra
+            sales=sales, promo=promo,
+            amazon_fees=amazon_fees, cost_of_goods=cost_of_goods, shipping=shipping,
+            gross_profit=gross, net_profit=net, row_type="return",
+            order_status="Refund", fee_state="ACTUAL_REFUND",
         ).to_row())
 
     # ── Summary_Products: gom theo (asin, sku) ───────────────────────────────

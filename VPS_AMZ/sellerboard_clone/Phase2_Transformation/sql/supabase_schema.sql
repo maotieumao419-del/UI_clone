@@ -286,6 +286,7 @@ CREATE INDEX IF NOT EXISTS "idx_NEW_fee_cache_sku" ON "NEW_fee_cache"(sku);
 -- Bảng Master chi tiết theo đơn hàng (CSV Sellerboard)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS "NEW_summary_order_items" (
+    owner_id        INTEGER NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
     order_number    TEXT NOT NULL,
     order_date      DATE,                      -- theo giờ local marketplace (Pacific)
     product         TEXT,
@@ -311,11 +312,12 @@ CREATE TABLE IF NOT EXISTS "NEW_summary_order_items" (
     price_source    TEXT NOT NULL DEFAULT 'ACTUAL',  -- ACTUAL | ESTIMATED
     fee_state       TEXT DEFAULT 'NONE',        -- ACTUAL | ESTIMATED | NONE
     updated_at      TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (order_number, asin, sku, row_type)
+    PRIMARY KEY (owner_id, order_number, asin, sku, row_type)
 );
--- Phòng trường hợp bảng đã tồn tại từ trước (thiếu 2 cột này)
+-- Phòng trường hợp bảng đã tồn tại từ trước (thiếu các cột này)
 ALTER TABLE "NEW_summary_order_items" ADD COLUMN IF NOT EXISTS order_status TEXT NOT NULL DEFAULT '';
 ALTER TABLE "NEW_summary_order_items" ADD COLUMN IF NOT EXISTS price_source TEXT NOT NULL DEFAULT 'ACTUAL';
+ALTER TABLE "NEW_summary_order_items" ADD COLUMN IF NOT EXISTS owner_id INTEGER REFERENCES "users"("id") ON DELETE CASCADE;
 
 CREATE INDEX IF NOT EXISTS "idx_NEW_summary_order_items_date"
     ON "NEW_summary_order_items" (order_date);
