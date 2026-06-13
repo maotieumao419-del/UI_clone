@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!-- Phase 3 — test_render.html
+     Trang kiểm thử ĐỘC LẬP cho render_performance.js (không cần backend):
+     stub window.App + window.api với payload mẫu (giống cấu trúc thật từ
+     analytics_aggregator.py) để xem bảng render đúng layout/màu sắc.
+     Mở: python -m http.server rồi vào /Phase3/test_render.html?case=normal|empty -->
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Phase 3 — Test render_performance.js</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 p-6">
+  <h1 class="font-bold mb-1">Test ma trận hiệu suất sản phẩm (Phase 3)</h1>
+  <p class="text-xs text-slate-500 mb-4">
+    Case: <a class="underline" href="?case=normal">normal</a> ·
+    <a class="underline" href="?case=empty">empty</a> ·
+    <a class="underline" href="?case=legacy">legacy (payload cũ — fallback)</a>
+  </p>
+  <label class="text-sm">Kỳ:
+    <select id="range-select" onchange="App.loadDashboard()" class="border rounded px-2 py-1 text-sm">
+      <option value="7">7 ngày</option><option value="30" selected>30 ngày</option>
+    </select>
+  </label>
+
+  <div class="bg-white rounded-xl shadow-sm mt-4 p-4 overflow-x-auto">
+    <table class="w-full text-sm whitespace-nowrap">
+      <thead class="text-slate-500 border-b">
+        <tr class="text-left"><th class="py-2">Tên</th><th class="text-right">Đơn vị bán</th>
+        <th class="text-right">Hoàn</th><th class="text-right">Doanh thu</th><th class="text-right">Giá bán TB</th>
+        <th class="text-right">Quảng cáo</th><th class="text-right">LN gộp</th><th class="text-right">LN ròng</th>
+        <th class="text-right">Biên</th><th class="text-right">ROI</th><th class="text-right">BSR</th></tr>
+      </thead>
+      <tbody id="top-products"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // ---- Stub app.js gốc (đủ các thành phần mà render_performance.js đụng tới) ----
+    var CASE = new URLSearchParams(location.search).get('case') || 'normal';
+
+    var ROW = function (o) {
+      // 1 dòng đầy đủ khoá mới + khoá cũ như analytics_aggregator.py trả về
+      return Object.assign({
+        title: o.title, asin: o.asin, sku: o.sku,
+        quantity: o.qty, price: o.price, sales: o.sales,
+        product_cost: o.cogs, commission: o.comm, fba_fee: o.fba,
+        promo: o.promo, other_fees: 0, ad_spend: o.ads,
+        net_profit: o.net, margin: o.margin, refund_cost: 0,
+        product_id: 0, units: o.qty, refunds: o.refunds || 0,
+        avg_selling_price: o.price, cogs: o.cogs,
+        fees: o.comm + o.fba, ppc: o.ads, gross_profit: o.sales - o.cogs,
+        margin_pct: o.margin, roi_pct: 0, bsr: null,
+      });
+    };
+
+    var PAYLOADS = {
+      normal: {
+        status: 'success', period_days: 30, days: 30,
+        range: { start: '2026-05-11', end: '2026-06-10', timezone: 'America/Los_Angeles' },
+        timeseries: [], marketplace_breakdown: {},
+        totals: { quantity: 9, sales: 405.85, product_cost: 86.0, commission: 60.88,
+                  fba_fee: 49.47, promo: 12.0, other_fees: 0, ad_spend: 175.4,
+                  net_profit: 22.1, refunds: 1, margin: 5.4, orders: 8 },
+        top_products: [
+          ROW({ title: 'Positive Affirmation Jar — 365 Days of Inspirational Quotes for Self Care',
+                asin: 'B0F9PGKBX2', sku: 'POSITIVEJAR_TURTLE', qty: 5, price: 27.99,
+                sales: 139.95, cogs: 30, comm: 21, fba: 17.45, promo: 0, ads: 25.5,
+                net: 46.0, margin: 32.9 }),
+          ROW({ title: 'Bible Verse Jar with <b>"đặc biệt"</b> & ký tự <i>test escape</i>',
+                asin: 'B0DM93RNKC', sku: 'bible jar_03', qty: 2, price: 23.99,
+                sales: 47.98, cogs: 12, comm: 7.2, fba: 6.98, promo: 2, ads: 0,
+                net: 19.8, margin: 41.3 }),
+          ROW({ title: 'Wedding Adventure Book — sản phẩm đang LỖ vì ads cao (bleeding budget)',
+                asin: 'B0H1LJX4T9', sku: 'WEDDING_DEVOM_OURADVENTURE', qty: 2, price: 108.96,
+                sales: 217.92, cogs: 44, comm: 32.68, fba: 25.04, promo: 10, ads: 149.9,
+                net: -43.7, margin: -20.1, refunds: 1 }),
+        ],
+      },
+      empty: {
+        status: 'success', period_days: 30, days: 30,
+        range: { start: '2026-05-11', end: '2026-06-10', timezone: 'America/Los_Angeles' },
+        timeseries: [], marketplace_breakdown: {}, totals: {}, top_products: [],
+      },
+      legacy: { // payload CŨ (chưa vá backend) -> phải fallback renderer gốc
+        kpis: [], timeseries: [], marketplace_breakdown: {},
+        top_products: [{ product_id: 1, asin: 'B0LEGACY01', title: 'Sản phẩm payload cũ',
+          units: 3, refunds: 0, sales: 90, avg_selling_price: 30, cogs: 30, fees: 20,
+          ppc: 5, gross_profit: 60, net_profit: 35, margin_pct: 38.9, roi_pct: 116.7, bsr: 1234 }],
+      },
+    };
+
+    window.api = async function (path) {
+      console.log('[stub] api', path, 'case=', CASE);
+      return JSON.parse(JSON.stringify(PAYLOADS[CASE]));
+    };
+    var fmtNum = function (v) { return (Number(v) || 0).toLocaleString('en-US'); };
+    var fmtMoney = function (v) { return '$' + (Number(v) || 0).toFixed(2); };
+
+    window.App = {
+      // bản "gốc" tối giản — render kiểu cũ, dùng cho case legacy/fallback
+      async loadDashboard() {
+        var d = await window.api('/api/analytics/dashboard?days=30');
+        document.getElementById('top-products').innerHTML =
+          (d.top_products || []).map(function (p) {
+            return '<tr class="border-b"><td class="py-2">' + p.title + '</td>' +
+              '<td class="text-right">' + fmtNum(p.units) + '</td>' +
+              '<td class="text-right">' + fmtNum(p.refunds) + '</td>' +
+              '<td class="text-right">' + fmtMoney(p.sales) + '</td>' +
+              '<td class="text-right">' + fmtMoney(p.avg_selling_price) + '</td>' +
+              '<td class="text-right">' + fmtMoney(p.ppc) + '</td>' +
+              '<td class="text-right">' + fmtMoney(p.gross_profit) + '</td>' +
+              '<td class="text-right">' + fmtMoney(p.net_profit) + '</td>' +
+              '<td class="text-right">' + p.margin_pct + '%</td>' +
+              '<td class="text-right">' + p.roi_pct + '%</td>' +
+              '<td class="text-right">' + (p.bsr || '·') + '</td></tr>';
+          }).join('') || '<tr><td class="py-4 text-slate-400">Chưa có dữ liệu</td></tr>';
+        document.getElementById('top-products').dataset.renderer = 'legacy';
+      },
+      drawSales() {}, drawMarket() {}, async loadPeriods() {},
+    };
+  </script>
+  <script src="render_performance.js"></script>
+  <script>App.loadDashboard();</script>
+</body>
+</html>

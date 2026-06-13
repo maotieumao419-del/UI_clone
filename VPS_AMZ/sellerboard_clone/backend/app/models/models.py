@@ -66,6 +66,9 @@ class Product(Base):
     referral_fee_pct: Mapped[float] = mapped_column(Float, default=0.15)
     fba_fee_per_unit: Mapped[float] = mapped_column(Float, default=3.5)
 
+    # Ảnh chính từ SP-API Catalog Items (Phase 1 — fetch_product_images.py)
+    image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
 
     owner: Mapped["User"] = relationship(back_populates="products")

@@ -4,15 +4,24 @@ Dùng Pandas/NumPy để bóc tách doanh thu - phí Amazon - COGS (FIFO) - PPC 
 nhuận ròng, biên lợi nhuận, ROI. Cung cấp dữ liệu cho Dashboard, LTV và BSR.
 """
 import calendar
+import logging
 from collections import defaultdict, deque
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from ..models import BsrSnapshot, InventoryBatch, Order, OrderItem, Product
-from ..timeutils import now_utc, now_marketplace, to_marketplace_local
+from ..models import (BsrSnapshot, InventoryBatch, ListingSnapshot, Order,
+                      OrderItem, Product, SettlementEntry)
+from ..timeutils import (MARKETPLACE_TZ, now_utc, now_marketplace,
+                         to_marketplace_local)
+
+logger = logging.getLogger(__name__)
+
+# Bảng đệm báo cáo quảng cáo trên Supabase (Phase 3) — mỗi dòng là 1 bản ghi
+# report (SP/SB/SD) theo ngày, chứa raw_json gốc từ Advertising API.
+_ADS_REPORTS_TABLE = "raw_amazon_campaign_reports"
 
 
 def _fifo_cogs_by_product(db: Session, owner_id: int) -> dict[int, list[float]]:
@@ -74,6 +83,139 @@ def calculate_cogs_fifo(db: Session, owner_id: int) -> dict:
     }
 
 
+def _marketplace_local_to_utc(local_dt: datetime) -> datetime:
+    """Nghịch đảo của `to_marketplace_local`: quy đổi mốc giờ địa phương của
+    marketplace (naive, Pacific Time) về UTC naive — dùng để lọc các cột DB
+    lưu theo UTC (vd SettlementEntry.posted_date)."""
+    return local_dt.replace(tzinfo=MARKETPLACE_TZ).astimezone(timezone.utc).replace(tzinfo=None)
+
+
+def _settlement_fees_by_sku(db: Session, owner_id: int,
+                            start_local: datetime, end_local: datetime) -> dict[str, dict]:
+    """Tổng hợp phí THẬT theo SKU từ Settlement Report trong khoảng kỳ.
+
+    Trả về {sku: {commission, fba, promo, other, has_fees}}:
+      - commission : Referral fee / Commission (lấy trị tuyệt đối)
+      - fba        : các phí hoàn thiện đơn FBA*/Fulfillment (trị tuyệt đối)
+      - promo      : chiết khấu khuyến mãi (Promotion*, trị tuyệt đối)
+      - other      : các phí/điều chỉnh khác, GIỮ NGUYÊN DẤU (+/- Other_Fees)
+      - has_fees   : SKU có dữ liệu phí thật hay chưa (nếu chưa -> nơi gọi
+                     fallback về phí ước tính referral_fee_pct/fba_fee_per_unit)
+    """
+    start_utc = _marketplace_local_to_utc(start_local)
+    end_utc = _marketplace_local_to_utc(end_local)
+    rows = db.execute(
+        select(SettlementEntry.sku, SettlementEntry.amount_type,
+               SettlementEntry.amount_description, func.sum(SettlementEntry.amount))
+        .where(SettlementEntry.owner_id == owner_id,
+               SettlementEntry.sku != "",
+               SettlementEntry.posted_date >= start_utc,
+               SettlementEntry.posted_date <= end_utc)
+        .group_by(SettlementEntry.sku, SettlementEntry.amount_type,
+                  SettlementEntry.amount_description)
+    ).all()
+
+    out: dict[str, dict] = defaultdict(
+        lambda: {"commission": 0.0, "fba": 0.0, "promo": 0.0, "other": 0.0, "has_fees": False})
+    for sku, amount_type, desc, amount in rows:
+        d = (desc or "").lower()
+        amt = float(amount or 0.0)
+        bucket = out[sku]
+        if "commission" in d or "referral" in d:
+            bucket["commission"] += abs(amt)
+            bucket["has_fees"] = True
+        elif d.startswith("fba") or "fulfillment" in d:
+            bucket["fba"] += abs(amt)
+            bucket["has_fees"] = True
+        elif "promo" in d:
+            bucket["promo"] += abs(amt)
+        elif amount_type == "ItemPrice":
+            continue  # Principal/Shipping/Tax = doanh thu, đã có sẵn trong Orders
+        else:
+            bucket["other"] += amt  # giữ dấu gốc: bồi thường (+) / phí khác (-)
+    return dict(out)
+
+
+def _ads_spend_by_sku(sales_by_sku: dict[str, float],
+                      start_local: datetime, end_local: datetime) -> dict[str, float]:
+    """Phân bổ chi phí quảng cáo xuống từng SKU từ bảng đệm Supabase
+    `raw_amazon_campaign_reports` trong khoảng kỳ (theo ngày local marketplace —
+    Ads API vốn đã trả report theo timezone tài khoản quảng cáo).
+
+    Chiến lược phân bổ 3 tầng:
+      1) Bản ghi cấp SKU/ASIN (report SP theo advertisedSku) -> gán thẳng.
+      2) Bản ghi cấp campaign: nếu tên campaign chứa SKU -> gán cho SKU đó.
+      3) Phần spend còn lại không khớp -> phân bổ theo tỉ trọng doanh thu.
+
+    Bọc try-except toàn phần: Supabase lỗi/chưa có bảng -> trả {} để nơi gọi
+    fallback về Order.ppc_cost, KHÔNG làm sập dashboard.
+    """
+    try:
+        from .supabase_client import get_supabase_client
+        supabase = get_supabase_client()
+        resp = (supabase.table(_ADS_REPORTS_TABLE)
+                .select("*")
+                .gte("report_date", start_local.date().isoformat())
+                .lte("report_date", end_local.date().isoformat())
+                .execute())
+        rows = resp.data or []
+    except Exception as exc:
+        logger.warning("[AdsAlloc] Khong doc duoc %s tu Supabase (%s) — fallback ppc_cost.",
+                       _ADS_REPORTS_TABLE, exc)
+        return {}
+
+    allocated: dict[str, float] = defaultdict(float)
+    unmatched = 0.0
+    skus_upper = {s.upper(): s for s in sales_by_sku if s}
+
+    for r in rows:
+        raw = r.get("raw_json") if isinstance(r.get("raw_json"), dict) else r
+        cost = 0.0
+        for key in ("cost", "spend", "ad_spend"):
+            if raw.get(key) is not None:
+                try:
+                    cost = float(raw.get(key) or 0.0)
+                except (TypeError, ValueError):
+                    cost = 0.0
+                break
+        if not cost:
+            continue
+        # Tầng 1: bản ghi cấp SKU/ASIN
+        sku = raw.get("advertisedSku") or raw.get("advertised_sku") or ""
+        if sku in sales_by_sku:
+            allocated[sku] += cost
+            continue
+        # Tầng 2: dò SKU trong tên campaign (quy ước đặt tên campaign theo SKU)
+        name = str(raw.get("campaignName") or raw.get("campaign_name") or "").upper()
+        hit = next((orig for up, orig in skus_upper.items() if up and up in name), None)
+        if hit:
+            allocated[hit] += cost
+        else:
+            unmatched += cost
+
+    # Tầng 3: phân bổ phần không khớp theo tỉ trọng doanh thu từng SKU
+    total_sales = sum(v for v in sales_by_sku.values() if v > 0)
+    if unmatched > 0 and total_sales > 0:
+        for sku, s in sales_by_sku.items():
+            if s > 0:
+                allocated[sku] += unmatched * (s / total_sales)
+    return dict(allocated)
+
+
+def _latest_image_by_product(db: Session, product_ids: list[int]) -> dict[int, str | None]:
+    """Ảnh thumbnail mới nhất của từng sản phẩm (từ ListingSnapshot.data.main_image)."""
+    if not product_ids:
+        return {}
+    img_map: dict[int, str | None] = {}
+    for pid, data in db.execute(
+        select(ListingSnapshot.product_id, ListingSnapshot.data)
+        .where(ListingSnapshot.product_id.in_(product_ids))
+        .order_by(ListingSnapshot.product_id, ListingSnapshot.captured_at.desc())
+    ).all():
+        img_map.setdefault(pid, (data or {}).get("main_image"))
+    return img_map
+
+
 def _build_dataframe(db: Session, owner_id: int, start: datetime, end: datetime) -> pd.DataFrame:
     """Bảng dữ liệu dòng (1 dòng = 1 order item) đã gắn COGS FIFO + phí."""
     cogs_map = _fifo_cogs_by_product(db, owner_id)
@@ -90,6 +232,7 @@ def _build_dataframe(db: Session, owner_id: int, start: datetime, end: datetime)
             Order.is_refunded,
             Order.marketplace,
             Product.asin,
+            Product.sku,
             Product.title,
             Product.referral_fee_pct,
             Product.fba_fee_per_unit,
@@ -102,7 +245,7 @@ def _build_dataframe(db: Session, owner_id: int, start: datetime, end: datetime)
 
     records = []
     for r in rows:
-        (pid, qty, price, order_id, purchased_at, ppc, refunded, market, asin, title, ref_pct, fba) = r
+        (pid, qty, price, order_id, purchased_at, ppc, refunded, market, asin, sku, title, ref_pct, fba) = r
         # Quy doi gio mua hang tu UTC sang gio dia phuong cua marketplace (vd: Pacific
         # Time cho US) - de "ngay mua hang" tinh giong cach Amazon Seller Central /
         # Sellerboard hien thi (tranh lech "Hom nay/Hom qua" do khac mui gio voi UTC).
@@ -129,7 +272,10 @@ def _build_dataframe(db: Session, owner_id: int, start: datetime, end: datetime)
             {
                 "product_id": pid,
                 "asin": asin,
+                "sku": sku,
                 "title": title,
+                "ref_pct": ref_pct,
+                "fba_per_unit": fba,
                 "order_id": order_id,
                 "date": local_dt.date().isoformat(),
                 "marketplace": market,
@@ -143,8 +289,8 @@ def _build_dataframe(db: Session, owner_id: int, start: datetime, end: datetime)
             }
         )
 
-    cols = ["product_id", "asin", "title", "order_id", "date", "marketplace", "units",
-            "sales", "fees", "cogs", "ppc", "net_profit", "refunded"]
+    cols = ["product_id", "asin", "sku", "title", "ref_pct", "fba_per_unit", "order_id",
+            "date", "marketplace", "units", "sales", "fees", "cogs", "ppc", "net_profit", "refunded"]
     return pd.DataFrame(records, columns=cols)
 
 
