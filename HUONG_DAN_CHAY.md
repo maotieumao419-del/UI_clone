@@ -1,321 +1,158 @@
-# Hướng dẫn chạy — API Debug Scripts
+# Hướng dẫn chạy — Vận hành Hệ thống 3 Giai đoạn (Phase 1, 2, 3)
+
+Tài liệu này hướng dẫn chi tiết cách chạy hệ thống thu thập, xử lý và tích hợp dữ liệu SellerVision (bao gồm Phase 1 Ingestion, Phase 2 Transformation, và Phase 3 Application Bridge).
 
 ---
 
-## Phần 1: Chạy bằng Terminal (PowerShell)
-
-### Bước 0 — Chuẩn bị môi trường (chỉ làm 1 lần)
-
-Mở **PowerShell** (không cần Admin), chạy theo thứ tự:
-
-```powershell
-# Vào đúng thư mục chứa code
-cd C:\Users\nnh16\ads-trading-system\test_lwa_spapi
-
-# Cài thư viện cần thiết
-pip install requests python-dotenv
-```
-
-Kiểm tra nhanh:
-```powershell
-python --version
-# Phải ra: Python 3.x.x
-```
+## Mục lục
+1. [Phase 1: Thu thập dữ liệu (Ingestion)](#phase-1-thu-thập-dữ-liệu-ingestion)
+2. [Phase 2: Biến đổi dữ liệu (Transformation)](#phase-2-biến-đổi-dữ-liệu-transformation)
+3. [Phase 3: Tích hợp ứng dụng & Vá UI (Application & Patch)](#phase-3-tích-hợp-ứng-dụng--vá-ui-application--patch)
+4. [Khắc phục lỗi thường gặp](#khắc-phục-lỗi-thường-gặp)
 
 ---
 
-### Bước 1 — Điền credentials vào .env
+## Chuẩn bị môi trường chung (chỉ làm 1 lần)
 
-File `.env` nằm tại:
-```
-C:\Users\nnh16\ads-trading-system\test_lwa_spapi\.env
-```
+Đảm bảo bạn đang ở thư mục gốc của dự án (`VPS/VPS_AMZ/sellerboard_clone`) và môi trường ảo `.venv` đã được kích hoạt:
 
-Mở bằng Notepad hoặc VS Code, kiểm tra các dòng này đã có giá trị chưa:
-
-```
-AMAZON_SPI_CLIENT_ID=<đã điền chưa?>
-AMAZON_SPI_CLIENT_SECRET=<đã điền chưa?>
-AMAZON_SPI_REFRESH_TOKEN=<đã điền chưa?>
-AMAZON_SPI_MARKETPLACE_ID=ATVPDKIKX0DER
-
-AWS_ACCESS_KEY_ID=<đã điền chưa?>
-AWS_SECRET_ACCESS_KEY=<đã điền chưa?>
-AWS_ROLE_ARN=arn:aws:iam::...:role/...
-AWS_REGION=us-east-1
-
-AMAZON_ADS_REFRESH_TOKEN=      ← thêm mới (thường giống SP refresh token)
-ADS_PROFILE_ID=                ← thêm mới (xem Bước 2b bên dưới)
-```
-
-> **Lưu ý:** `AMAZON_ADS_REFRESH_TOKEN` thường CÙNG giá trị với `AMAZON_SPI_REFRESH_TOKEN`
-> nếu bạn tạo cùng 1 app có cả 2 scope SP + Ads.
+* **Windows (PowerShell):**
+  ```powershell
+  cd C:\Users\nnh16\ads-trading-system\VPS\VPS_AMZ\sellerboard_clone
+  .\.venv\Scripts\Activate.ps1
+  ```
+* **macOS / Linux:**
+  ```bash
+  cd ~/ads-trading-system/VPS/VPS_AMZ/sellerboard_clone
+  source .venv/bin/activate
+  ```
 
 ---
 
-### Bước 2a — Chạy từng script riêng lẻ
+## Phase 1: Thu thập dữ liệu (Ingestion)
 
-Tất cả lệnh đều chạy từ thư mục:
+Phase 1 thực hiện kéo dữ liệu thô từ Amazon SP-API và Ads API, sau đó đẩy trực tiếp thành các dòng đệm trên Supabase (bảng `NEW_*`).
+
+### 1. Cấu hình credentials
+Sao chép file cấu hình mẫu và điền đầy đủ thông tin tài khoản API:
+- File mẫu: `Phase1_Ingestion/.env.example`
+- File cấu hình thật: tạo file `.env` nằm tại thư mục `Phase1_Ingestion/` (`Phase1_Ingestion/.env`)
+
+### 2. Khởi chạy bằng dòng lệnh (Terminal)
+Từ thư mục `VPS_AMZ/sellerboard_clone/`:
+
+```bash
+# Thu thập tất cả dữ liệu (Orders, Finances, Ads) trong 24 giờ qua
+python Phase1_Ingestion/direct_stream_pipeline.py --all
+
+# Thu thập dữ liệu của một ngày cụ thể (theo giờ Pacific của Seller Central)
+python Phase1_Ingestion/direct_stream_pipeline.py --all --date 2026-06-09
 ```
-C:\Users\nnh16\ads-trading-system\test_lwa_spapi\
+
+### 3. Tìm profile quảng cáo (ADS_PROFILE_ID)
+Nếu biến `ADS_PROFILE_ID` trong `.env` đang trống, hãy khởi chạy script Ads:
+```bash
+python Phase1_Ingestion/direct_stream_pipeline.py --ads
 ```
+Hệ thống sẽ liệt kê các `profileId` khả dụng trên màn hình. Hãy copy `profileId` tương ứng với tài khoản Seller bán hàng của bạn và dán vào file `.env`.
 
-```powershell
-# Vào thư mục (CHỈ cần làm 1 lần mỗi phiên terminal)
-cd C:\Users\nnh16\ads-trading-system\test_lwa_spapi
+### 4. Vận hành nhanh trên Windows
+Bạn chỉ cần click đúp vào file `Phase1_Ingestion/start.bat`. Cửa sổ console sẽ mở ra và tự động hỏi bạn muốn chạy kéo dữ liệu cho "24 giờ qua" hay chọn "một ngày cụ thể".
 
-# Script 1: Lấy Orders + OrderItems 24h gần nhất
-python fetch_24h_orders.py
-
-# Script 2: Lấy Financial Events 24h (phí FBA, referral, refund)
-python fetch_24h_finances.py
-
-# Script 3: Lấy Ads Reports ngày hôm qua (SP + SB + SBV + SD)
-python fetch_24h_ads.py
-
-# Hoặc chạy cả 3 cùng lúc theo thứ tự:
-python run_all.py
+### 5. Dọn dẹp & loại bỏ trùng lặp (Buffer Cleanup)
+Hệ thống tự động gom nhóm và loại bỏ các dòng bị trùng lặp ngay sau khi ingest. Bạn có thể tự kích hoạt quy trình này thủ công bằng lệnh:
+```bash
+python Phase1_Ingestion/process_buffer_cleanup.py
 ```
 
 ---
 
-### Bước 2b — Lần đầu chạy Ads: tìm ADS_PROFILE_ID
+## Phase 2: Biến đổi dữ liệu (Transformation)
 
-Nếu `ADS_PROFILE_ID` trong `.env` đang trống, chạy:
+Phase 2 biến đổi dữ liệu thô từ các bảng đệm `NEW_*` thành các chỉ số tài chính FBA (Master KPI) và lưu vào bảng tổng hợp `NEW_summary_*` trên Supabase.
 
-```powershell
-cd C:\Users\nnh16\ads-trading-system\test_lwa_spapi
-python fetch_24h_ads.py
+### 1. Nhập bảng giá vốn sản phẩm (COGS)
+Để hệ thống tính toán chính xác biên lợi nhuận và giá vốn hàng bán, hãy nhập file CSV chứa giá vốn (COGS) được xuất từ Sellerboard:
+```bash
+python Phase2_Transformation/import_cogs_from_csv.py "đường/dẫn/đến/file_products.csv"
 ```
 
-Script sẽ tự động in ra danh sách profiles khi profile_id trống:
-```
-  Tìm thấy 2 profiles:
-    profileId=1234567890  marketplace=US  type=seller  name=Musemory
-    profileId=9876543210  marketplace=US  type=vendor  name=...
-```
+### 2. Khởi chạy công cụ biến đổi dữ liệu (ETL Engine)
+Từ thư mục `VPS_AMZ/sellerboard_clone/`:
 
-Sao chép `profileId` của seller account (type=seller) → dán vào `.env`:
-```
-ADS_PROFILE_ID=1234567890
-```
+```bash
+# Tổng hợp dữ liệu hiệu suất của 7 ngày gần nhất và ghi vào Supabase
+python Phase2_Transformation/transform_engine.py --days 7
 
-Rồi chạy lại:
-```powershell
-python fetch_24h_ads.py
+# Chạy thử nghiệm (Dry-run) - chỉ in kết quả JSON ra màn hình chứ không ghi vào cơ sở dữ liệu
+python Phase2_Transformation/transform_engine.py --days 7 --no-write --json
 ```
 
 ---
 
-### Bước 3 — Xem kết quả
+## Phase 3: Tích hợp ứng dụng & Vá UI (Application & Patch)
 
-Sau khi chạy xong, các file output nằm tại:
-```
-C:\Users\nnh16\ads-trading-system\test_lwa_spapi\raw_data\
+Phase 3 đồng bộ dữ liệu KPI từ Supabase về SQLite local của Web App (`sellervision.db`), đồng thời cung cấp các công cụ vá lỗi giao diện để hiển thị bảng hiệu suất sản phẩm mới.
+
+### 1. Đồng bộ cơ sở dữ liệu về Web App (Bridge)
+Đồng bộ các dòng tổng hợp từ Supabase về cơ sở dữ liệu SQLite cục bộ để phục vụ hiển thị trên giao diện:
+```bash
+# Đồng bộ dữ liệu của tài khoản email demo cho 30 ngày gần nhất
+python Phase3_Application/data_bridge/supabase_to_app_db.py --seller demo@sellervision.io --days 30
 ```
 
-| File | Nội dung | Mở bằng |
-|---|---|---|
-| `orders_24h_raw.json` | Toàn bộ đơn hàng thô từ Amazon | VS Code / Notepad++ |
-| `fields_map.txt` | Danh sách tất cả field Orders API trả về | Notepad |
-| `finances_24h_raw.json` | Toàn bộ financial events thô | VS Code |
-| `finances_summary.txt` | Tổng tiền từng loại phí — SO SÁNH VỚI SELLERBOARD | Notepad |
-| `finances_fields_map.txt` | Danh sách field Finances API | Notepad |
-| `ads_sp_raw.json` | Sponsored Products report thô | VS Code |
-| `ads_sb_raw.json` | Sponsored Brands + SBV report thô | VS Code |
-| `ads_sd_raw.json` | Sponsored Display report thô | VS Code |
-| `ads_sp_asin_raw.json` | SP report chi tiết theo ASIN/SKU | VS Code |
-| `ads_summary.txt` | Tổng spend từng loại — SO SÁNH VỚI SELLERBOARD | Notepad |
-| `ads_fields_map.txt` | Danh sách field Ads API | Notepad |
+### 2. Quản trị tài khoản người dùng bằng dòng lệnh (CLI)
+Do hệ thống backend không mở public API đổi mật khẩu, bạn quản trị tài khoản trực tiếp trên VPS qua file CLI:
+```bash
+# Xem danh sách người dùng hiện có
+python Phase3_Application/manage_user.py --list
+
+# Tạo tài khoản mới
+python Phase3_Application/manage_user.py --create --email user@test.com --password mysecurepassword
+
+# Thay đổi mật khẩu người dùng hiện có (vẫn giữ nguyên ID và dữ liệu cũ)
+python Phase3_Application/manage_user.py --set --email demo@sellervision.io --password newpassword
+```
+
+### 3. Kích hoạt bảng hiệu suất sản phẩm mới (Patch Scripts)
+Sử dụng các script vá tự động để chèn mã vẽ bảng tài chính chuẩn Sellerboard vào FastAPI backend và SPA Frontend:
+
+* **Bước 1: Chạy thử kiểm tra (Dry-run)**
+  ```bash
+  python Phase3_Application/data_bridge/patch_scripts/patch_dashboard.py --check
+  python Phase3_Application/data_bridge/patch_scripts/patch_frontend.py --check
+  ```
+  *Màn hình hiển thị "khớp chính xác - sẵn sàng vá" là an toàn.*
+
+* **Bước 2: Thực hiện vá thực tế (Tự động sao lưu và biên dịch thử)**
+  ```bash
+  python Phase3_Application/data_bridge/patch_scripts/patch_dashboard.py
+  python Phase3_Application/data_bridge/patch_scripts/patch_frontend.py
+  ```
+
+* **Bước 3: Khởi động lại ứng dụng**
+  Sau khi chạy thành công, hãy khởi động lại service backend (vd: reload gunicorn hoặc restart uvicorn) và bấm **Ctrl + F5** trên trình duyệt để trải nghiệm giao diện bảng hiệu suất sản phẩm mới.
+
+### 4. Khôi phục trạng thái ban đầu (Rollback)
+Nếu muốn gỡ bỏ hoàn toàn bảng hiệu suất và khôi phục các file code nguyên bản của web app:
+```bash
+python Phase3_Application/data_bridge/patch_scripts/rollback.py
+```
+*Script sẽ tự động tìm bản sao lưu gần nhất trong thư mục backups/ để ghi đè trả lại file gốc.*
 
 ---
 
-### Lỗi thường gặp khi chạy terminal
+## Khắc phục lỗi thường gặp
 
-| Lỗi | Nguyên nhân | Cách sửa |
-|---|---|---|
-| `ModuleNotFoundError: requests` | Chưa cài thư viện | `pip install requests python-dotenv` |
-| `❌ Thiếu credentials` | .env chưa điền đủ | Mở .env, điền các giá trị còn trống |
-| `403 Forbidden` từ SP-API | STS role sai hoặc LWA-only | Kiểm tra `AWS_ROLE_ARN` trong .env |
-| `❌ Thiếu ADS_PROFILE_ID` | Chưa điền profile | Chạy script → đọc output → copy profileId vào .env |
-| `TimeoutError` khi poll Ads | Amazon chậm generate report | Chờ 5-10 phút, chạy lại |
-| `python` không nhận lệnh | Python chưa cài hoặc không trong PATH | Thử `python3` hoặc cài Python từ python.org |
+### 1. Lỗi `ModuleNotFoundError: No module named '...'`
+- **Cách sửa:** Đảm bảo bạn đã kích hoạt môi trường ảo `.venv` và cài đặt đầy đủ dependencies bằng lệnh:
+  ```bash
+  pip install -r backend/requirements.txt
+  pip install -r Phase1_Ingestion/requirements.txt
+  ```
 
----
+### 2. Lệch số liệu so với Amazon Seller Central
+- **Cách sửa:** Do Amazon tính theo giờ Pacific (`America/Los_Angeles`). Hãy kiểm tra xem file `.env` của bạn đã cấu hình múi giờ chuẩn chưa: `SELLER_TIMEZONE=America/Los_Angeles`. Tuyệt đối không dùng múi giờ local của server hoặc trình duyệt client khi group theo ngày.
 
-## Phần 2: Chạy bằng Code Python (không cần gõ terminal)
-
-### Ý tưởng
-
-Thay vì mở terminal và gõ lệnh, bạn tạo 1 file `.py` bấm Run trong IDE
-(VS Code, PyCharm) hoặc double-click — nó sẽ tự làm tất cả.
-
----
-
-### File: `start.py` — bấm Run 1 cái, chạy hết
-
-Tạo file `start.py` trong thư mục `test_lwa_spapi\`:
-
-```python
-"""
-Bấm Run file này trong VS Code hoặc PyCharm là xong.
-Không cần mở terminal, không cần gõ lệnh.
-"""
-import subprocess
-import sys
-import os
-
-# Tự động cd vào đúng thư mục chứa script
-HERE = os.path.dirname(os.path.abspath(__file__))
-os.chdir(HERE)
-
-SCRIPTS = [
-    "fetch_24h_orders.py",
-    "fetch_24h_finances.py",
-    "fetch_24h_ads.py",
-]
-
-for script in SCRIPTS:
-    print(f"\n{'='*50}")
-    print(f"Đang chạy: {script}")
-    print(f"{'='*50}")
-    result = subprocess.run([sys.executable, script])
-    if result.returncode != 0:
-        print(f"❌ {script} có lỗi. Nhấn Enter để chạy tiếp...")
-        input()
-
-print("\n✅ Xong. Xem kết quả trong thư mục raw_data/")
-input("Nhấn Enter để đóng...")
-```
-
-> **Chạy trong VS Code:** mở file `start.py` → nhấn nút ▶ Run ở góc trên phải
-> **Chạy bằng double-click:** đổi tên thành `start.bat` (xem bên dưới)
-
----
-
-### File: `start.bat` — double-click để chạy (Windows)
-
-Tạo file `start.bat` trong thư mục `test_lwa_spapi\`:
-
-```batch
-@echo off
-cd /d C:\Users\nnh16\ads-trading-system\test_lwa_spapi
-echo ========================================
-echo  SELLERBOARD API DEBUG - START
-echo ========================================
-
-echo.
-echo [1/3] Orders...
-python fetch_24h_orders.py
-if %errorlevel% neq 0 (
-    echo FAILED: fetch_24h_orders.py
-    pause
-    exit /b 1
-)
-
-echo.
-echo [2/3] Finances...
-python fetch_24h_finances.py
-if %errorlevel% neq 0 (
-    echo FAILED: fetch_24h_finances.py
-    pause
-    exit /b 1
-)
-
-echo.
-echo [3/3] Ads Reports...
-python fetch_24h_ads.py
-if %errorlevel% neq 0 (
-    echo FAILED: fetch_24h_ads.py
-    pause
-)
-
-echo.
-echo ========================================
-echo  XONG. Ket qua trong thu muc raw_data/
-echo ========================================
-pause
-```
-
-**Cách dùng:** Double-click vào file `start.bat` → cửa sổ CMD tự mở → tự chạy → hiện kết quả.
-
----
-
-### Cách các script hoạt động bên trong
-
-```
-fetch_24h_orders.py
-│
-├── 1. Đọc credentials từ .env
-├── 2. Gọi LWA → lấy access_token (hết hạn sau 1h)
-├── 3. Gọi STS → assume role → lấy temp AWS credentials (cho SigV4)
-├── 4. Loop: GET /orders/v0/orders (mỗi trang 100 đơn, có NextToken)
-│         + GET /orders/v0/orders/{id}/orderItems (mỗi đơn 1 lần gọi)
-│         + sleep 1s giữa các lần gọi (tránh bị rate limit)
-└── 5. Lưu raw JSON + fields map vào raw_data/
-
-fetch_24h_finances.py
-│
-├── 1-3. Auth giống trên
-├── 4. Loop: GET /finances/v0/financialEvents (pagination NextToken)
-│         — lấy ShipmentEventList, RefundEventList,
-│           AdjustmentEventList, ServiceFeeEventList
-└── 5. Tính tổng từng loại phí + lưu summary + raw JSON
-
-fetch_24h_ads.py
-│
-├── 1. Đọc credentials từ .env
-├── 2. Gọi LWA cho Ads token (KHÔNG cần AWS SigV4)
-├── 3. Gửi 4 POST requests tạo report (SP, SP-ASIN, SB, SD) → nhận reportId
-├── 4. Poll mỗi 15 giây cho đến status=COMPLETED (1-5 phút)
-├── 5. Download từ pre-signed S3 URL → giải nén gzip → parse JSON
-└── 6. Tính tổng spend + lưu summary + raw JSON
-```
-
----
-
-## Phần 3: Sơ đồ thư mục đầy đủ
-
-```
-C:\Users\nnh16\ads-trading-system\
-└── test_lwa_spapi\                    ← THƯ MỤC LÀM VIỆC CHÍNH
-    ├── .env                           ← CREDENTIALS (không commit git)
-    ├── .env.example                   ← Template tham khảo
-    │
-    ├── _auth.py                       ← Module dùng chung (auth, SigV4, helpers)
-    ├── fetch_24h_orders.py            ← Script 1: SP-API Orders
-    ├── fetch_24h_finances.py          ← Script 2: SP-API Finances
-    ├── fetch_24h_ads.py               ← Script 3: Advertising API
-    ├── run_all.py                     ← Chạy cả 3 theo thứ tự (terminal)
-    │
-    ├── start.py                       ← Bấm Run trong VS Code (tạo file này)
-    ├── start.bat                      ← Double-click để chạy (tạo file này)
-    │
-    ├── inspect_raw_data.py            ← Đọc từ Supabase (script cũ)
-    ├── README.txt                     ← Hướng dẫn gốc
-    ├── requirements.txt               ← Danh sách thư viện
-    └── raw_data\                      ← KẾT QUẢ OUTPUT (tự tạo khi chạy)
-        ├── orders_24h_raw.json
-        ├── fields_map.txt
-        ├── finances_24h_raw.json
-        ├── finances_summary.txt
-        ├── finances_fields_map.txt
-        ├── ads_sp_raw.json
-        ├── ads_sb_raw.json
-        ├── ads_sd_raw.json
-        ├── ads_sp_asin_raw.json
-        ├── ads_summary.txt
-        └── ads_fields_map.txt
-```
-
----
-
-## Phần 4: Checklist trước khi chạy
-
-- [ ] Python đã cài: `python --version` ra 3.x.x
-- [ ] Thư viện đã cài: `pip install requests python-dotenv`
-- [ ] File `.env` đã có: CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN
-- [ ] File `.env` đã có: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ROLE_ARN
-- [ ] File `.env` đã có: AMAZON_ADS_REFRESH_TOKEN (thường = SP refresh token)
-- [ ] `ADS_PROFILE_ID` đã điền (chạy script 1 lần để lấy nếu chưa có)
-- [ ] Đang ở đúng thư mục: `C:\Users\nnh16\ads-trading-system\test_lwa_spapi\`
+### 3. Lỗi 403 khi kết nối SP-API
+- **Cách sửa:** Kiểm tra kỹ cấu hình `AWS_ROLE_ARN` trong file `Phase1_Ingestion/.env`. Đảm bảo tài khoản AWS của bạn có quyền assume role và đã cấu hình chính xác Orders/Finance Roles trên cổng Amazon Partner Network.

@@ -10,4 +10,5 @@ from .models import (  # noqa: F401
     BsrSnapshot,
     SettlementEntry,
     AggregatedDaily,
+    SummaryProduct,
 )

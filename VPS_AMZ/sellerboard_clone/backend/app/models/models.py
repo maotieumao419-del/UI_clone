@@ -4,10 +4,11 @@ Các bảng cần tính toàn vẹn giao dịch (ACID): user, product, order, in
 Dữ liệu linh hoạt/biến động (listing changes, log) lưu ở cột JSON -
 trong production có thể tách sang MongoDB như đề xuất trong Structure.md.
 """
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import (
     Boolean,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -226,3 +227,46 @@ class AggregatedDaily(Base):
     net_profit: Mapped[float] = mapped_column(Float, default=0.0)    # net_revenue - cogs - ppc_cost
 
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class SummaryProduct(Base):
+    __tablename__ = "NEW_summary_products"
+
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    period_start: Mapped[date] = mapped_column(Date, primary_key=True)
+    period_end: Mapped[date] = mapped_column(Date, primary_key=True)
+    product: Mapped[str | None] = mapped_column(Text, nullable=True)
+    asin: Mapped[str] = mapped_column(String(20), primary_key=True, default='')
+    sku: Mapped[str] = mapped_column(String(64), primary_key=True, default='')
+
+    units: Mapped[int] = mapped_column(Integer, default=0)
+    refunds: Mapped[int] = mapped_column(Integer, default=0)
+    sales: Mapped[float] = mapped_column(Float, default=0.0)
+    promo: Mapped[float] = mapped_column(Float, default=0.0)
+    ads: Mapped[float] = mapped_column(Float, default=0.0)
+    sponsored_products: Mapped[float] = mapped_column(Float, default=0.0)
+    sponsored_display: Mapped[float] = mapped_column(Float, default=0.0)
+    sponsored_brands: Mapped[float] = mapped_column(Float, default=0.0)
+    sponsored_brands_video: Mapped[float] = mapped_column(Float, default=0.0)
+    google_ads: Mapped[float] = mapped_column(Float, default=0.0)
+    facebook_ads: Mapped[float] = mapped_column(Float, default=0.0)
+    refunds_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sellable_quota: Mapped[float | None] = mapped_column(Float, nullable=True)
+    refund_cost: Mapped[float] = mapped_column(Float, default=0.0)
+    amazon_fees: Mapped[float] = mapped_column(Float, default=0.0)
+    cost_of_goods: Mapped[float] = mapped_column(Float, default=0.0)
+    shipping: Mapped[float] = mapped_column(Float, default=0.0)
+    gross_profit: Mapped[float] = mapped_column(Float, default=0.0)
+    net_profit: Mapped[float] = mapped_column(Float, default=0.0)
+    estimated_payout: Mapped[float] = mapped_column(Float, default=0.0)
+    expenses: Mapped[float] = mapped_column(Float, default=0.0)
+    margin: Mapped[float | None] = mapped_column(Float, nullable=True)
+    roi: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bsr: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    real_acos: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sessions: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    unit_session_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    average_sales_price: Mapped[float] = mapped_column(Float, default=0.0)
+    fee_state: Mapped[str] = mapped_column(String(20), default='NONE')
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+

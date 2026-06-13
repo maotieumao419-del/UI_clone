@@ -328,6 +328,7 @@ CREATE INDEX IF NOT EXISTS "idx_NEW_summary_order_items_sku"
 -- Bảng Master 31 chỉ số theo (ASIN, SKU) trong kỳ
 -- ============================================================
 CREATE TABLE IF NOT EXISTS "NEW_summary_products" (
+    owner_id                INTEGER NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
     period_start            DATE NOT NULL,
     period_end              DATE NOT NULL,
     product                 TEXT,
@@ -363,7 +364,7 @@ CREATE TABLE IF NOT EXISTS "NEW_summary_products" (
     average_sales_price     NUMERIC(12,2) DEFAULT 0,
     fee_state               TEXT DEFAULT 'NONE',        -- ACTUAL | ESTIMATED | MIXED
     updated_at              TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (period_start, period_end, asin, sku)
+    PRIMARY KEY (owner_id, period_start, period_end, asin, sku)
 );
 
 CREATE INDEX IF NOT EXISTS "idx_NEW_summary_products_sku"

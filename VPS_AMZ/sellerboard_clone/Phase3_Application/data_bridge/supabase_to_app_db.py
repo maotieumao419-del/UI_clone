@@ -21,7 +21,7 @@ import argparse
 import gc
 import logging
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 _THIS_DIR = Path(__file__).resolve().parent             # .../Phase3_Application/data_bridge
@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 T_ORDERS = "NEW_sp_orders"
 T_ITEMS  = "NEW_sp_order_items"
+T_SUMMARY = "NEW_summary_products"
 PAGE = 100
 
 
@@ -174,6 +175,107 @@ def sync_orders(db, sb, owner_id: int, since_utc: datetime) -> dict:
     return stats
 
 
+def sync_summary_products(db, sb, owner_id: int, since_utc: datetime) -> dict:
+    """Supabase NEW_summary_products -> SQLite NEW_summary_products.
+    Sử dụng ON CONFLICT (owner_id, period_start, period_end, asin, sku) DO UPDATE SET."""
+    from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+    from app.models import SummaryProduct, Base
+    
+    # Đảm bảo bảng tồn tại ở SQLite
+    Base.metadata.create_all(bind=db.bind)
+
+    stats = {"inserted_or_updated": 0, "skipped": 0, "errors": 0}
+    offset = 0
+    
+    # Lấy các cột cần update khi có conflict
+    cols_to_update = [
+        c.name for c in SummaryProduct.__table__.columns 
+        if c.name not in ('owner_id', 'period_start', 'period_end', 'asin', 'sku')
+    ]
+
+    since_date_str = since_utc.date().isoformat()
+    
+    while True:
+        resp = (sb.table(T_SUMMARY)
+                .select("*")
+                .eq("owner_id", owner_id)
+                .gte("period_start", since_date_str)
+                .order("period_start")
+                .range(offset, offset + PAGE - 1).execute())
+        
+        rows = resp.data or []
+        if not rows:
+            break
+
+        try:
+            with db.begin_nested():
+                for row in rows:
+                    p_start = date.fromisoformat(row["period_start"])
+                    p_end = date.fromisoformat(row["period_end"])
+                    
+                    row_dict = {
+                        "owner_id": owner_id,
+                        "period_start": p_start,
+                        "period_end": p_end,
+                        "product": row.get("product"),
+                        "asin": row.get("asin") or "",
+                        "sku": row.get("sku") or "",
+                        "units": row.get("units") or 0,
+                        "refunds": row.get("refunds") or 0,
+                        "sales": row.get("sales") or 0.0,
+                        "promo": row.get("promo") or 0.0,
+                        "ads": row.get("ads") or 0.0,
+                        "sponsored_products": row.get("sponsored_products") or 0.0,
+                        "sponsored_display": row.get("sponsored_display") or 0.0,
+                        "sponsored_brands": row.get("sponsored_brands") or 0.0,
+                        "sponsored_brands_video": row.get("sponsored_brands_video") or 0.0,
+                        "google_ads": row.get("google_ads") or 0.0,
+                        "facebook_ads": row.get("facebook_ads") or 0.0,
+                        "refunds_pct": row.get("refunds_pct"),
+                        "sellable_quota": row.get("sellable_quota"),
+                        "refund_cost": row.get("refund_cost") or 0.0,
+                        "amazon_fees": row.get("amazon_fees") or 0.0,
+                        "cost_of_goods": row.get("cost_of_goods") or 0.0,
+                        "shipping": row.get("shipping") or 0.0,
+                        "gross_profit": row.get("gross_profit") or 0.0,
+                        "net_profit": row.get("net_profit") or 0.0,
+                        "estimated_payout": row.get("estimated_payout") or 0.0,
+                        "expenses": row.get("expenses") or 0.0,
+                        "margin": row.get("margin"),
+                        "roi": row.get("roi"),
+                        "bsr": row.get("bsr"),
+                        "real_acos": row.get("real_acos"),
+                        "sessions": row.get("sessions"),
+                        "unit_session_pct": row.get("unit_session_pct"),
+                        "average_sales_price": row.get("average_sales_price") or 0.0,
+                        "fee_state": row.get("fee_state") or 'NONE',
+                        "updated_at": _parse_dt(row.get("updated_at")) or datetime.utcnow()
+                    }
+                    
+                    stmt = sqlite_insert(SummaryProduct).values(row_dict)
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['owner_id', 'period_start', 'period_end', 'asin', 'sku'],
+                        set_={col: stmt.excluded[col] for col in cols_to_update}
+                    )
+                    db.execute(stmt)
+                    stats["inserted_or_updated"] += 1
+            db.commit()
+            print(f"  [Bridge] Summary products offset {offset}: +{len(rows)} rows OK")
+        except Exception as exc:
+            stats["errors"] += 1
+            db.rollback()
+            logger.warning("[Bridge] Lỗi trang summary products offset %s: %s — rollback.", offset, exc)
+            
+        offset += PAGE
+        del rows
+        gc.collect()
+
+    return stats
+
+
+
+
+
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     ap = argparse.ArgumentParser(description="data_bridge: Supabase NEW_* -> SQLite app")
@@ -189,8 +291,13 @@ def main() -> int:
         owner_id = get_owner_id(db, args.seller)      # Strict Mapping — lỗi là dừng
         since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=args.days)
         print(f"[Bridge] Seller '{args.seller}' -> owner_id={owner_id}; từ {since:%Y-%m-%d}")
-        stats = sync_orders(db, sb, owner_id, since)
-        print(f"\n[Bridge] Kết quả: {stats}")
+        print(f"[Bridge] Bắt đầu đồng bộ Order...")
+        order_stats = sync_orders(db, sb, owner_id, since)
+        print(f"[Bridge] Đồng bộ Order hoàn tất: {order_stats}")
+
+        print(f"[Bridge] Bắt đầu đồng bộ NEW_summary_products...")
+        summary_stats = sync_summary_products(db, sb, owner_id, since)
+        print(f"[Bridge] Đồng bộ NEW_summary_products hoàn tất: {summary_stats}")
 
         # Tính COGS FIFO đúng 1 lần SAU khi commit xong toàn bộ
         try:

@@ -1,1 +1,0 @@
-!function(){var e=$("#ebayNeedsReconnectModal");e.length&&e.modal("show")}();

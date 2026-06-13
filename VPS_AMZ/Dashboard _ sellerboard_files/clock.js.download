@@ -1,1 +1,0 @@
-!function(){var t=$("[data-clock]");if(!t.length)return null;var e=t.data("format"),n=t.data("current"),a=moment.unix(n).utc().diff(moment.utc()),r=function(){var n=(window.currentMarketplaceMoment=moment.utc().add(a)).format(e);n!==t.text()&&t.text(n),setTimeout(r,1e3)};r()}();

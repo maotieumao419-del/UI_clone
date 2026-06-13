@@ -1,1 +1,0 @@
-!function(){window.EVENT_DASHBOARD_PERIOD_CALCULATION="dashboard_period_calculation";window.triggerAnalyticsEvent=function(n){var r={event:n};r[window.CSRF_TOKEN_KEY]=window.CSRF_TOKEN,$.ajax({type:"post",url:"/index/analyticsEvent",data:r,success:function(n){},error:function(n,r,t){if("abort"===r)return null;globalAlertServerError(n)}})}}();
