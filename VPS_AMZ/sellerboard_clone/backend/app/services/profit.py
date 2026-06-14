@@ -131,25 +131,45 @@ def period_overview(db: Session, owner_id: int) -> dict:
                 func.sum(SummaryOrderItem.refunds),
                 func.sum(SummaryOrderItem.amazon_fees),
                 func.count(func.distinct(SummaryOrderItem.order_number)),
+                func.sum(SummaryOrderItem.promo),
+                func.sum(SummaryOrderItem.refund_cost),
+                func.sum(SummaryOrderItem.cost_of_goods),
+                func.sum(SummaryOrderItem.shipping),
+                func.sum(SummaryOrderItem.gross_profit),
+                func.sum(SummaryOrderItem.expenses),
             ).where(
                 SummaryOrderItem.owner_id == owner_id,
                 SummaryOrderItem.order_date >= lo,
                 SummaryOrderItem.order_date <= hi,
             )
         ).first()
-        sales, item_net, units, refunds, amazon_fees, orders = (
+        (sales, item_net, units, refunds, amazon_fees, orders,
+         promo, refund_cost, cost_of_goods, shipping, gross_profit, expenses) = (
             float(row[0] or 0), float(row[1] or 0), int(row[2] or 0),
-            int(row[3] or 0), float(row[4] or 0), int(row[5] or 0))
+            int(row[3] or 0), float(row[4] or 0), int(row[5] or 0),
+            float(row[6] or 0), float(row[7] or 0), float(row[8] or 0),
+            float(row[9] or 0), float(row[10] or 0), float(row[11] or 0))
 
-        # ads lưu âm (chi phí); amazon_fees cũng lưu âm (đã trừ vào gross).
-        ad_spend = float(db.scalar(
-            select(func.sum(SummaryProduct.ads)).where(
+        # ads/sponsored_* lưu âm (chi phí); amazon_fees cũng lưu âm (đã trừ vào gross).
+        ad_row = db.execute(
+            select(
+                func.sum(SummaryProduct.ads),
+                func.sum(SummaryProduct.sponsored_products),
+                func.sum(SummaryProduct.sponsored_display),
+                func.sum(SummaryProduct.sponsored_brands),
+                func.sum(SummaryProduct.sponsored_brands_video),
+                func.sum(SummaryProduct.google_ads),
+                func.sum(SummaryProduct.facebook_ads),
+            ).where(
                 SummaryProduct.owner_id == owner_id,
                 SummaryProduct.period_start == SummaryProduct.period_end,
                 SummaryProduct.period_start >= lo,
                 SummaryProduct.period_start <= hi,
             )
-        ) or 0.0)
+        ).first()
+        ad_spend, sp, sd, sb, sbv, gads, fads = (
+            float(ad_row[0] or 0), float(ad_row[1] or 0), float(ad_row[2] or 0),
+            float(ad_row[3] or 0), float(ad_row[4] or 0), float(ad_row[5] or 0), float(ad_row[6] or 0))
 
         return {
             "sales": round(sales, 2),
@@ -159,20 +179,49 @@ def period_overview(db: Session, owner_id: int) -> dict:
             "fees": round(-amazon_fees, 2),
             "ppc": round(-ad_spend, 2),
             "net_profit": round(item_net + ad_spend, 2),
+            "promo": round(promo, 2),
+            "refund_cost": round(refund_cost, 2),
+            "cost_of_goods": round(cost_of_goods, 2),
+            "shipping": round(shipping, 2),
+            "gross_profit": round(gross_profit, 2),
+            "expenses": round(expenses, 2),
+            "ads_breakdown": {
+                "sponsored_products": round(sp, 2),
+                "sponsored_display": round(sd, 2),
+                "sponsored_brands": round(sb, 2),
+                "sponsored_brands_video": round(sbv, 2),
+                "google_ads": round(gads, 2),
+                "facebook_ads": round(fads, 2),
+            },
         }
 
     fmt = lambda d: d.strftime("%d/%m/%Y")
 
     def card(key, label, range_label, now_agg, compare_agg=None):
+        sales = now_agg["sales"]
         return {
             "key": key, "label": label, "range_label": range_label,
-            "sales": round(now_agg["sales"], 2),
+            "sales": round(sales, 2),
             "sales_delta_pct": _delta_pct(now_agg["sales"], compare_agg["sales"]) if compare_agg else None,
             "orders": now_agg["orders"], "units": now_agg["units"], "refunds": now_agg["refunds"],
             "adv_cost": round(now_agg["ppc"], 2),
             "est_payout": round(now_agg["sales"] - now_agg["fees"] - now_agg["ppc"], 2),
             "net_profit": round(now_agg["net_profit"], 2),
             "net_profit_delta_pct": _delta_pct(now_agg["net_profit"], compare_agg["net_profit"]) if compare_agg else None,
+            # Chi tiết P&L kiểu Sellerboard (mọi chi phí ÂM, theo CLAUDE.md):
+            "promo": now_agg["promo"],
+            "refund_cost": now_agg["refund_cost"],
+            "cost_of_goods": now_agg["cost_of_goods"],
+            "shipping": now_agg["shipping"],
+            "gross_profit": now_agg["gross_profit"],
+            "expenses": now_agg["expenses"],
+            "amazon_fees": round(-now_agg["fees"], 2),
+            "ads": round(-now_agg["ppc"], 2),
+            "ads_breakdown": now_agg["ads_breakdown"],
+            "margin": round(now_agg["net_profit"] / sales * 100, 2) if sales else None,
+            "roi": round(now_agg["net_profit"] / abs(now_agg["cost_of_goods"]) * 100, 2) if now_agg["cost_of_goods"] else None,
+            "real_acos": round(now_agg["ppc"] / sales * 100, 2) if sales else None,
+            "refunds_pct": round(now_agg["refunds"] / now_agg["units"] * 100, 2) if now_agg["units"] else None,
         }
 
     today_agg = agg(today, today)
@@ -196,6 +245,10 @@ def period_overview(db: Session, owner_id: int) -> dict:
         "units": round(mtd_agg["units"] * factor), "refunds": round(mtd_agg["refunds"] * factor),
         "fees": mtd_agg["fees"] * factor, "ppc": mtd_agg["ppc"] * factor,
         "net_profit": mtd_agg["net_profit"] * factor,
+        "promo": mtd_agg["promo"] * factor, "refund_cost": mtd_agg["refund_cost"] * factor,
+        "cost_of_goods": mtd_agg["cost_of_goods"] * factor, "shipping": mtd_agg["shipping"] * factor,
+        "gross_profit": mtd_agg["gross_profit"] * factor, "expenses": mtd_agg["expenses"] * factor,
+        "ads_breakdown": {k: v * factor for k, v in mtd_agg["ads_breakdown"].items()},
     }
 
     periods = [

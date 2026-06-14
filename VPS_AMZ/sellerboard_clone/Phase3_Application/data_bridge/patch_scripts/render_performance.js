@@ -250,6 +250,10 @@
     referral_fee: 'Referral fee', fba_fee: 'FBA fee', ads: 'Quảng cáo',
     promo: 'Khuyến mãi', refund_cost: 'Hoàn tiền', shipping: 'Vận chuyển',
     net_profit: 'Lợi nhuận ròng', gross_profit: 'Lợi nhuận gộp',
+    expenses: 'Chi phí khác', est_payout: 'Tiền về dự kiến',
+    sponsored_products: 'Sponsored Products', sponsored_brands: 'Sponsored Brands',
+    sponsored_brands_video: 'Sponsored Brands Video', sponsored_display: 'Sponsored Display',
+    google_ads: 'Google Ads', facebook_ads: 'Facebook Ads',
   };
 
   function ensurePopover() {
@@ -301,15 +305,33 @@
   };
 
   // Mức 6A: mở popover tại vị trí chuột với cây detailed_pnl
-  function showPopover(evt, tree, titleText) {
+  // extraRows: [{label, value, isPercent}] -> render thêm các chỉ số tỉ lệ
+  // (Margin, ROI, Real ACOS, % Refunds...) bên dưới cây P&L.
+  // footerNote: dòng chú thích nhỏ ở cuối (vd: chỉ số chưa có nguồn dữ liệu).
+  function showPopover(evt, tree, titleText, extraRows, footerNote) {
     ensurePopover();
     var pop = document.getElementById('drilldown-popover');
+    var extraHtml = '';
+    if (extraRows && extraRows.length) {
+      extraHtml = '<tr><td colspan="2" class="pt-2 pb-1 px-3 text-[11px] font-semibold text-slate-400 border-t">Tỉ lệ</td></tr>' +
+        extraRows.map(function (r) {
+          var val = (r.value === null || r.value === undefined)
+            ? '<span class="text-slate-400">—</span>'
+            : pnl(r.value, r.isPercent);
+          return '<tr class="border-b last:border-0"><td class="py-1.5 px-3">' + esc(r.label) + '</td>' +
+            '<td class="py-1.5 px-3 text-right">' + val + '</td></tr>';
+        }).join('');
+    }
+    var footerHtml = footerNote
+      ? '<div class="px-3 py-2 border-t text-[11px] text-slate-400">' + esc(footerNote) + '</div>'
+      : '';
     pop.innerHTML =
       '<div class="px-3 py-2 border-b font-semibold flex items-center justify-between">' +
         '<span>' + esc(titleText) + '</span>' +
         '<button type="button" class="text-slate-400 hover:text-slate-700" onclick="document.getElementById(\'drilldown-popover\').classList.add(\'hidden\')">✕</button>' +
       '</div>' +
-      '<table class="w-full"><tbody>' + renderPnlTree(tree, null) + '</tbody></table>';
+      '<table class="w-full"><tbody>' + renderPnlTree(tree, null) + extraHtml + '</tbody></table>' +
+      footerHtml;
     var x = evt.clientX, y = evt.clientY;
     var maxX = window.innerWidth - 280, maxY = window.innerHeight - 40;
     pop.style.left = Math.min(x, maxX) + window.scrollX + 'px';
@@ -318,19 +340,43 @@
     evt.stopPropagation();
   }
 
-  // Mức 6A — tile "More": xây cây P&L từ dữ liệu thẻ kỳ (period card)
+  // Mức 6A — tile "More": xây cây P&L đầy đủ kiểu Sellerboard từ dữ liệu
+  // thẻ kỳ (period card) — backend/app/services/profit.py period_overview().
   SV8.showTileMore = function (evt, key) {
     var p = state.periods.find(function (x) { return x.key === key; });
     if (!p) return;
-    // amazon_fees suy ra từ công thức profit.period_overview(): est_payout = sales - fees - ppc
-    var amazonFees = round2(p.est_payout - p.sales - p.adv_cost);
+    var ab = p.ads_breakdown || {};
+    var adsChildren = {
+      sponsored_products: { total: ab.sponsored_products || 0 },
+      sponsored_brands: { total: ab.sponsored_brands || 0 },
+      sponsored_brands_video: { total: ab.sponsored_brands_video || 0 },
+      sponsored_display: { total: ab.sponsored_display || 0 },
+    };
+    if (ab.google_ads) adsChildren.google_ads = { total: ab.google_ads };
+    if (ab.facebook_ads) adsChildren.facebook_ads = { total: ab.facebook_ads };
+
     var tree = {
       sales: { total: p.sales },
-      amazon_fees: { total: amazonFees, children: splitAmazonFees(p.sales, amazonFees) },
-      ads: { total: p.adv_cost },
+      promo: { total: p.promo },
+      amazon_fees: { total: p.amazon_fees, children: splitAmazonFees(p.sales, p.amazon_fees) },
+      cogs: { total: p.cost_of_goods },
+      shipping: { total: p.shipping },
+      gross_profit: { total: p.gross_profit },
+      ads: { total: p.ads, children: adsChildren },
+      refund_cost: { total: p.refund_cost },
+      expenses: { total: p.expenses },
       net_profit: { total: p.net_profit },
+      est_payout: { total: p.est_payout },
     };
-    showPopover(evt, tree, p.label + ' — P&L');
+    var extraRows = [
+      { label: 'Margin', value: p.margin, isPercent: true },
+      { label: 'ROI', value: p.roi, isPercent: true },
+      { label: 'Real ACOS', value: p.real_acos, isPercent: true },
+      { label: '% Refunds', value: p.refunds_pct, isPercent: true },
+    ];
+    var footerNote = 'Sessions, % Unit session, Active subscriptions (SnS), BSR, ' +
+      'Sellable returns: chưa có nguồn dữ liệu từ Amazon API.';
+    showPopover(evt, tree, p.label + ' — P&L', extraRows, footerNote);
   };
 
   // Mức 6A — row "...": cây P&L chi tiết từ detailed_pnl backend (Mức 8)
