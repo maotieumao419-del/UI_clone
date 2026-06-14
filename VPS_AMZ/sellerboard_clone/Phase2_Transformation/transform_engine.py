@@ -64,6 +64,9 @@ T_PRICE     = "NEW_product_price"
 _IN_CHUNK   = 150       # số order_id mỗi lần .in_() — tránh URL quá dài
 _CHUNK_SIZE = 100       # chunk upsert nội bộ (calibrate_fee_cache)
 _LOAD_BATCH = 1000      # micro-batch ghi Master (tránh HTTP 413 Payload Too Large)
+# NEW_summary_order_items/NEW_summary_products có owner_id NOT NULL trong PK
+# (migrate_summary_order_items_owner_id.py) — DB hiện chỉ có 1 user (id=1).
+DEFAULT_OWNER_ID = int(os.getenv("SUMMARY_OWNER_ID", "1"))
 _CANCELED   = ("Canceled", "Cancelled")
 MARKETPLACE_LABEL = os.getenv("MARKETPLACE_LABEL", "Amazon.com")
 # Referral mặc định khi không có override/không suy được (Amazon US chuẩn 15%)
@@ -913,13 +916,18 @@ def load_to_supabase_robust(rows, table_name: str, supabase_client,
 
 def write_summaries(sb, result: dict) -> dict:
     """Upsert 3 bảng Master lên Supabase qua load_to_supabase_robust."""
+    # owner_id là 1 phần PRIMARY KEY của NEW_summary_order_items/NEW_summary_products
+    for r in result["item_rows"]:
+        r["owner_id"] = DEFAULT_OWNER_ID
+    for r in result["product_rows"]:
+        r["owner_id"] = DEFAULT_OWNER_ID
     return {
         "items": load_to_supabase_robust(
             result["item_rows"], T_SUMMARY_ITEMS, sb,
-            "order_number,asin,sku,row_type"),
+            "owner_id,order_number,asin,sku,row_type"),
         "products": load_to_supabase_robust(
             result["product_rows"], T_SUMMARY_PRODUCTS, sb,
-            "period_start,period_end,asin,sku"),
+            "owner_id,period_start,period_end,asin,sku"),
         "campaigns": load_to_supabase_robust(
             result["campaign_rows"], T_SUMMARY_CAMPAIGNS, sb,
             "period_start,period_end,campaign_id"),
