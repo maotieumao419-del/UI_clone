@@ -606,6 +606,77 @@ def _build_campaigns(sb, prod: dict, period_start: str, period_end: str) -> list
     return rows
 
 
+def _aggregate_products(sb, item_rows: list[dict], period_start: str, period_end: str,
+                        title_by_key: dict[tuple[str, str], str]
+                        ) -> tuple[dict[tuple[str, str], SummaryProduct], list[dict]]:
+    """Gom item_rows theo (asin, sku) -> SummaryProduct(period_start, period_end)
+    + phân bổ Ad Spend 3 tầng theo từng kênh trong [period_start, period_end].
+    Trả (prod_dict, product_rows) — prod_dict dùng cho _build_campaigns (GPU/SKU)."""
+    prod: dict[tuple[str, str], SummaryProduct] = {}
+    prod_states: dict[tuple[str, str], set] = defaultdict(set)
+    for r in item_rows:
+        key = (r["asin"], r["sku"])
+        p = prod.setdefault(key, SummaryProduct(
+            period_start=period_start, period_end=period_end,
+            product=title_by_key.get(key, r["product"]), asin=key[0], sku=key[1]))
+        p.units += r["units"]
+        p.refunds += r["refunds"]
+        p.sales += r["sales"]
+        p.promo += r["promo"]
+        p.refund_cost += r["refund_cost"]
+        p.amazon_fees += r["amazon_fees"]
+        p.cost_of_goods += r["cost_of_goods"]
+        p.shipping += r["shipping"]
+        if r.get("fee_state") in ("ACTUAL", "ESTIMATED"):
+            prod_states[key].add(r["fee_state"])
+    for key, p in prod.items():
+        st = prod_states.get(key, set())
+        p.fee_state = "MIXED" if len(st) > 1 else (next(iter(st)) if st else "NONE")
+
+    # ── Phân bổ Ad Spend 3 tầng theo từng kênh ───────────────────────────────
+    sales_by_sku: dict[str, float] = defaultdict(float)
+    asin_to_sku: dict[str, str] = {}
+    for (asin, sku), p in prod.items():
+        sales_by_sku[sku] += p.sales
+        if asin and asin not in asin_to_sku:
+            asin_to_sku[asin] = sku
+    channels = _fetch_ads_by_channel(sb, period_start, period_end)
+    alloc = {ch: _allocate_channel(rows, dict(sales_by_sku), asin_to_sku)
+             for ch, rows in channels.items()}
+
+    def _share(sku: str, p_sales: float, channel: str) -> float:
+        """SKU xuất hiện ở nhiều dòng (asin, sku) -> chia theo tỉ trọng sales."""
+        total = alloc.get(channel, {}).get(sku, 0.0)
+        sku_sales = sales_by_sku.get(sku, 0.0)
+        return total * (p_sales / sku_sales) if sku_sales else total
+
+    for (asin, sku), p in prod.items():
+        p.sponsored_products = -round(_share(sku, p.sales, "sponsored_products"), 2)
+        p.sponsored_brands = -round(_share(sku, p.sales, "sponsored_brands"), 2)
+        p.sponsored_brands_video = -round(_share(sku, p.sales, "sponsored_brands_video"), 2)
+        p.sponsored_display = -round(_share(sku, p.sales, "sponsored_display"), 2)
+        p.ads = round(p.sponsored_products + p.sponsored_brands
+                      + p.sponsored_brands_video + p.sponsored_display
+                      + p.google_ads + p.facebook_ads, 2)
+
+        for attr in ("sales", "promo", "refund_cost", "amazon_fees",
+                     "cost_of_goods", "shipping"):
+            setattr(p, attr, round(getattr(p, attr), 2))
+        p.gross_profit = round(p.sales + p.promo + p.amazon_fees
+                               + p.cost_of_goods + p.shipping, 2)
+        p.net_profit = round(p.gross_profit + p.ads + p.refund_cost + p.expenses, 2)
+        p.estimated_payout = round(p.sales + p.promo + p.amazon_fees + p.refund_cost, 2)
+        p.average_sales_price = round(p.sales / p.units, 2) if p.units else 0.0
+        p.margin = round(p.net_profit / p.sales * 100, 2) if p.sales else None
+        p.roi = round(p.net_profit / abs(p.cost_of_goods) * 100, 2) if p.cost_of_goods else None
+        p.refunds_pct = round(p.refunds / p.units * 100, 2) if p.units else None
+        p.real_acos = round(-p.ads / p.sales * 100, 2) if p.sales else None
+
+    product_rows = [p.to_row() for p in prod.values()]
+    product_rows.sort(key=lambda r: r["net_profit"], reverse=True)
+    return prod, product_rows
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 3. Engine chính
 # ══════════════════════════════════════════════════════════════════════════════
@@ -728,74 +799,14 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
             order_status="Refund", fee_state="ACTUAL_REFUND",
         ).to_row())
 
-    # ── Summary_Products: gom theo (asin, sku) ───────────────────────────────
-    prod: dict[tuple[str, str], SummaryProduct] = {}
-    prod_states: dict[tuple[str, str], set] = defaultdict(set)
-    for r in item_rows:
-        key = (r["asin"], r["sku"])
-        p = prod.setdefault(key, SummaryProduct(
-            period_start=period_start, period_end=period_end,
-            product=title_by_key.get(key, r["product"]), asin=key[0], sku=key[1]))
-        p.units += r["units"]
-        p.refunds += r["refunds"]
-        p.sales += r["sales"]
-        p.promo += r["promo"]
-        p.refund_cost += r["refund_cost"]
-        p.amazon_fees += r["amazon_fees"]
-        p.cost_of_goods += r["cost_of_goods"]
-        p.shipping += r["shipping"]
-        if r.get("fee_state") in ("ACTUAL", "ESTIMATED"):
-            prod_states[key].add(r["fee_state"])
-    for key, p in prod.items():
-        st = prod_states.get(key, set())
-        p.fee_state = "MIXED" if len(st) > 1 else (next(iter(st)) if st else "NONE")
+    # ── Summary_Products: gom theo (asin, sku) cho CẢ KỲ + phân bổ Ad Spend ──
+    prod, product_rows = _aggregate_products(sb, item_rows, period_start, period_end, title_by_key)
+    period_product_rows = product_rows                 # dùng cho totals/validate (1 dòng/kỳ)
 
-    # ── Phân bổ Ad Spend 3 tầng theo từng kênh ───────────────────────────────
-    sales_by_sku: dict[str, float] = defaultdict(float)
-    asin_to_sku: dict[str, str] = {}
-    for (asin, sku), p in prod.items():
-        sales_by_sku[sku] += p.sales
-        if asin and asin not in asin_to_sku:
-            asin_to_sku[asin] = sku
-    channels = _fetch_ads_by_channel(sb, period_start, period_end)
-    alloc = {ch: _allocate_channel(rows, dict(sales_by_sku), asin_to_sku)
-             for ch, rows in channels.items()}
-
-    def _share(sku: str, p_sales: float, channel: str) -> float:
-        """SKU xuất hiện ở nhiều dòng (asin, sku) -> chia theo tỉ trọng sales."""
-        total = alloc.get(channel, {}).get(sku, 0.0)
-        sku_sales = sales_by_sku.get(sku, 0.0)
-        return total * (p_sales / sku_sales) if sku_sales else total
-
-    for (asin, sku), p in prod.items():
-        p.sponsored_products = -round(_share(sku, p.sales, "sponsored_products"), 2)
-        p.sponsored_brands = -round(_share(sku, p.sales, "sponsored_brands"), 2)
-        p.sponsored_brands_video = -round(_share(sku, p.sales, "sponsored_brands_video"), 2)
-        p.sponsored_display = -round(_share(sku, p.sales, "sponsored_display"), 2)
-        p.ads = round(p.sponsored_products + p.sponsored_brands
-                      + p.sponsored_brands_video + p.sponsored_display
-                      + p.google_ads + p.facebook_ads, 2)
-
-        for attr in ("sales", "promo", "refund_cost", "amazon_fees",
-                     "cost_of_goods", "shipping"):
-            setattr(p, attr, round(getattr(p, attr), 2))
-        p.gross_profit = round(p.sales + p.promo + p.amazon_fees
-                               + p.cost_of_goods + p.shipping, 2)
-        p.net_profit = round(p.gross_profit + p.ads + p.refund_cost + p.expenses, 2)
-        p.estimated_payout = round(p.sales + p.promo + p.amazon_fees + p.refund_cost, 2)
-        p.average_sales_price = round(p.sales / p.units, 2) if p.units else 0.0
-        p.margin = round(p.net_profit / p.sales * 100, 2) if p.sales else None
-        p.roi = round(p.net_profit / abs(p.cost_of_goods) * 100, 2) if p.cost_of_goods else None
-        p.refunds_pct = round(p.refunds / p.units * 100, 2) if p.units else None
-        p.real_acos = round(-p.ads / p.sales * 100, 2) if p.sales else None
-
-    product_rows = [p.to_row() for p in prod.values()]
-    product_rows.sort(key=lambda r: r["net_profit"], reverse=True)
-
-    # ── Mart 3: Campaign Profitability (GPU per SKU từ Mart 2) ───────────────
+    # ── Mart 3: Campaign Profitability (GPU per SKU từ Mart 2, cả kỳ) ────────
     campaign_rows = _build_campaigns(sb, prod, period_start, period_end)
 
-    warnings = validate_rollup([r for r in item_rows], product_rows)
+    warnings = validate_rollup([r for r in item_rows], period_product_rows)
 
     # ── Roll-up theo NGÀY LOCALIZED (Pacific): Daily_Sales = SUM(Product_Sales)
     # order_date/refund date của item_rows đã ép UTC -> America/Los_Angeles
@@ -822,7 +833,7 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
             d[k] = round(d[k], 2)
         daily_summary.append(d)
     day_sales_sum = round(sum(d["sales"] for d in daily_summary), 2)
-    period_sales = round(sum(r["sales"] or 0 for r in product_rows), 2)
+    period_sales = round(sum(r["sales"] or 0 for r in period_product_rows), 2)
     if abs(day_sales_sum - period_sales) > 0.01:
         warnings.append(f"[Roll-up] SUM(daily localized sales) {day_sales_sum} "
                         f"!= tổng kỳ {period_sales} — kiểm tra phép ép múi giờ!")
@@ -830,7 +841,7 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
     for w in warnings:
         logger.warning(w)
 
-    totals = {k: round(sum(r[k] or 0 for r in product_rows), 2)
+    totals = {k: round(sum(r[k] or 0 for r in period_product_rows), 2)
               for k in ("units", "refunds", "sales", "promo", "ads", "amazon_fees",
                         "cost_of_goods", "shipping", "refund_cost",
                         "gross_profit", "net_profit", "estimated_payout")}
@@ -839,6 +850,21 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
     totals["orders"] = len(orders)
     totals["margin"] = round(totals["net_profit"] / totals["sales"] * 100, 2) \
         if totals["sales"] else 0.0
+
+    # ── Daily breakdown (period_start == period_end mỗi ngày) ────────────────
+    # Card "Adv. cost" ở backend (profit.py: period_overview/agg) chỉ
+    # SUM(SummaryProduct.ads) khi period_start == period_end -> cần thêm
+    # 1 dòng/ngày/SKU bên cạnh dòng tổng kỳ ở trên (không thay thế, không trùng
+    # khoá NEW_summary_products vì period_start/period_end khác nhau).
+    if period_start != period_end:
+        items_by_date: dict[str, list[dict]] = defaultdict(list)
+        for r in item_rows:
+            d = r.get("order_date")
+            if d:
+                items_by_date[d].append(r)
+        for d, day_items in items_by_date.items():
+            _, day_product_rows = _aggregate_products(sb, day_items, d, d, title_by_key)
+            product_rows.extend(day_product_rows)
 
     # ── Reconciliation phí: tách ACTUAL vs ESTIMATED (đối chiếu Sellerboard) ──
     normal = [r for r in item_rows if r.get("row_type") == "normal"]
