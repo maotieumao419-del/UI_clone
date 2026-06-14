@@ -972,8 +972,11 @@ def run_transformation(supabase_client, target_date: str, *, days: int | None = 
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     ap = argparse.ArgumentParser(description="Phase 2 — Transformation Engine (NEW_* -> Summary_*)")
-    ap.add_argument("--days", type=int, default=7, help="Số ngày gần nhất (Pacific)")
-    ap.add_argument("--date", help="Đúng 1 ngày YYYY-MM-DD (Pacific) — bỏ qua --days")
+    ap.add_argument("--days", type=int, default=None,
+                    help="Số ngày của cửa sổ (Pacific). Mặc định 7 nếu không có --date. "
+                         "Kết hợp với --date: cửa sổ N ngày KẾT THÚC tại --date.")
+    ap.add_argument("--date", help="Ngày YYYY-MM-DD (Pacific) làm mốc kết thúc. "
+                                     "Không có --days -> đúng 1 ngày này.")
     ap.add_argument("--json", action="store_true", help="In kết quả JSON ra stdout")
     ap.add_argument("--no-write", action="store_true", help="Chỉ tính, không ghi Supabase")
     ap.add_argument("--fresh", action="store_true",
@@ -985,9 +988,9 @@ def main() -> int:
 
     sb = get_supabase_client()
     if args.date:
-        target_date, days = args.date, None
-    else:                       # --days N: cửa sổ N ngày TRỌN (Pacific) đến hôm nay
-        target_date, days = cfg.now_marketplace().date().isoformat(), args.days
+        target_date, days = args.date, args.days   # --days đi kèm --date -> cửa sổ N ngày kết thúc tại --date
+    else:                       # --days N (mặc định 7): cửa sổ N ngày TRỌN (Pacific) đến hôm nay
+        target_date, days = cfg.now_marketplace().date().isoformat(), (args.days or 7)
     result = run_transformation(sb, target_date, days=days,
                                 write=False, calibrate=args.calibrate)
     t = result["totals"]
