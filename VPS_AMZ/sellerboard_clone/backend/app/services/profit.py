@@ -107,8 +107,13 @@ def period_overview(db: Session, owner_id: int) -> dict:
     (Product.referral_fee_pct/fba_fee_per_unit mặc định + Order.ppc_cost luôn
     = 0 vốn cho ra lợi nhuận ảo cao hơn thực tế nhiều).
 
-    'Est. payout' xấp xỉ = Doanh thu - Phí Amazon - Chi phí PPC: số tiền thực
-    về tài khoản người bán (Amazon Ads cũng trừ tiền trực tiếp từ tài khoản).
+    'Est. payout' (Estimated payout from Amazon for the selected period) =
+    Sales + Promo + Amazon_fees + Refund_cost — TIỀN AMAZON SẼ CHUYỂN VỀ, một
+    chỉ số RIÊNG, KHÁC với 'Net profit' (lợi nhuận thực sau COGS/Ads/Expenses).
+    Không trừ PPC (Amazon Ads thanh toán/trừ qua kênh khác, không nằm trong
+    settlement payout của FBA/seller account) và không trừ COGS/Shipping/
+    Expenses (chi phí ngoài Amazon, Amazon không biết). Khớp với
+    SummaryProduct.estimated_payout ở transform_engine.py.
     """
     now = now_marketplace()
     today = now.date()
@@ -205,7 +210,7 @@ def period_overview(db: Session, owner_id: int) -> dict:
             "sales_delta_pct": _delta_pct(now_agg["sales"], compare_agg["sales"]) if compare_agg else None,
             "orders": now_agg["orders"], "units": now_agg["units"], "refunds": now_agg["refunds"],
             "adv_cost": round(now_agg["ppc"], 2),
-            "est_payout": round(now_agg["sales"] - now_agg["fees"] - now_agg["ppc"], 2),
+            "est_payout": round(now_agg["sales"] + now_agg["promo"] - now_agg["fees"] + now_agg["refund_cost"], 2),
             "net_profit": round(now_agg["net_profit"], 2),
             "net_profit_delta_pct": _delta_pct(now_agg["net_profit"], compare_agg["net_profit"]) if compare_agg else None,
             # Chi tiết P&L kiểu Sellerboard (mọi chi phí ÂM, theo CLAUDE.md):
