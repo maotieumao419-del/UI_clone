@@ -732,7 +732,10 @@
   // Ghi đè App.loadDashboard / loadPeriods / loadProductPerf
   // ════════════════════════════════════════════════════════════════════════
   function install() {
-    if (!window.App || typeof window.App.loadDashboard !== 'function') {
+    // app.js khai báo `const App = {...}` ở top-level (classic script) -> KHÔNG
+    // tạo thuộc tính window.App (chỉ const/let trong module mới gắn vào window).
+    // Phải tham chiếu biến toàn cục `App` trực tiếp, không qua window.App.
+    if (typeof App === 'undefined' || typeof App.loadDashboard !== 'function') {
       return false; // app.js chưa nạp xong
     }
 
