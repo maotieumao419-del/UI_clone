@@ -108,12 +108,13 @@ def period_overview(db: Session, owner_id: int) -> dict:
     = 0 vốn cho ra lợi nhuận ảo cao hơn thực tế nhiều).
 
     'Est. payout' (Estimated payout from Amazon for the selected period) =
-    Sales + Promo + Amazon_fees + Refund_cost — TIỀN AMAZON SẼ CHUYỂN VỀ, một
-    chỉ số RIÊNG, KHÁC với 'Net profit' (lợi nhuận thực sau COGS/Ads/Expenses).
-    Không trừ PPC (Amazon Ads thanh toán/trừ qua kênh khác, không nằm trong
-    settlement payout của FBA/seller account) và không trừ COGS/Shipping/
-    Expenses (chi phí ngoài Amazon, Amazon không biết). Khớp với
-    SummaryProduct.estimated_payout ở transform_engine.py.
+    Net_profit - Cost_of_goods — TIỀN AMAZON SẼ CHUYỂN VỀ, một chỉ số RIÊNG,
+    KHÁC với 'Net profit'. Vẫn trừ Ads/PPC (Amazon Ads trừ trực tiếp từ tài
+    khoản người bán) và Refund_cost/Expenses (đều nằm trong dòng tiền qua
+    Amazon), nhưng CỘNG NGƯỢC lại COGS — vì giá vốn hàng trả nhà cung cấp
+    không phải Amazon trừ/biết. Đã đối chiếu với Sellerboard thực tế 13/06/2026
+    (Net profit $235.45, COGS -$25.40 -> Est.payout ước $260.85 vs SB $258.35,
+    lệch ~1%, trong ngưỡng "cả hai bên đều ESTIMATE" của CLAUDE.md).
     """
     now = now_marketplace()
     today = now.date()
@@ -210,7 +211,7 @@ def period_overview(db: Session, owner_id: int) -> dict:
             "sales_delta_pct": _delta_pct(now_agg["sales"], compare_agg["sales"]) if compare_agg else None,
             "orders": now_agg["orders"], "units": now_agg["units"], "refunds": now_agg["refunds"],
             "adv_cost": round(now_agg["ppc"], 2),
-            "est_payout": round(now_agg["sales"] + now_agg["promo"] - now_agg["fees"] + now_agg["refund_cost"], 2),
+            "est_payout": round(now_agg["net_profit"] - now_agg["cost_of_goods"], 2),
             "net_profit": round(now_agg["net_profit"], 2),
             "net_profit_delta_pct": _delta_pct(now_agg["net_profit"], compare_agg["net_profit"]) if compare_agg else None,
             # Chi tiết P&L kiểu Sellerboard (mọi chi phí ÂM, theo CLAUDE.md):
