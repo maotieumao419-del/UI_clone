@@ -406,7 +406,10 @@
   function splitAmazonFees(sales, amazonFees) {
     var referral = -round2(Math.abs(sales) * 0.165);
     if (Math.abs(referral) > Math.abs(amazonFees)) referral = amazonFees;
-    return { referral_fee: referral, fba_fee: round2(amazonFees - referral) };
+    return {
+      referral_fee: { total: referral },
+      fba_fee: { total: round2(amazonFees - referral) },
+    };
   }
   function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
 
