@@ -11,7 +11,7 @@
 -- ============================================================
 
 -- ============================================================
--- BLOCK 1: TABLE & VIEW (30 objects)
+-- BLOCK 1: TABLE & VIEW (36 objects — gồm 6 object entity-tree/catalog từ migration 0003)
 -- ============================================================
 DO $$
 DECLARE
@@ -27,6 +27,14 @@ BEGIN
         ('NEW_fin_adjustments',        '[P1·Ingestion·Finances] Điều chỉnh tài khoản (Adjustment Events: reimbursement/clawback)'),
         ('NEW_ads_campaigns_daily',    '[P1·Ingestion·Ads] Kết quả campaign theo ngày (SP/SB/SD)'),
         ('NEW_ads_sp_asin_daily',      '[P1·Ingestion·Ads] Kết quả Sponsored Products theo ASIN/SKU/ngày'),
+
+        -- ── P1 · Ingestion · MỚI (migration 0003): Catalog hub + Ads entity tree + Raw archive ──
+        ('NEW_products',          '[P1·Ingestion·Catalog] Hub asin↔sku↔title (Ads ASIN ↔ Ops SKU gặp nhau)'),
+        ('NEW_ad_portfolios',     '[P1·Ingestion·Ads/Entity] Hồ sơ portfolio (dimension: budget/state)'),
+        ('NEW_ad_campaigns',      '[P1·Ingestion·Ads/Entity] Hồ sơ campaign (state/budget/targeting/bid + advertised_asin) — tách khỏi *_daily'),
+        ('NEW_ad_groups',         '[P1·Ingestion·Ads/Entity] Hồ sơ ad group (default_bid)'),
+        ('NEW_ad_keywords',       '[P1·Ingestion·Ads/Entity] Hồ sơ keyword (match_type/bid)'),
+        ('NEW_raw_archive_log',   '[P1·Ingestion·RawArchive] Sổ con trỏ object raw trên Cloudflare R2 (bronze)'),
 
         -- ── P1 · Input/Persistent (nhập tay / tích lũy) ─────────────
         ('NEW_product_cogs',           '[P1·Input·COGS] Giá vốn theo SKU, FIFO theo effective_date (nhập tay)'),
@@ -86,5 +94,13 @@ BEGIN
             '[P2·Function] Tái tạo Dashboard Card 1 ngày kiểu Sellerboard';
     ELSE
         RAISE NOTICE 'Bỏ qua (không tồn tại): NEW_fn_daily_summary(date)';
+    END IF;
+
+    -- MỚI (migration 0003): seed hub NEW_products
+    IF to_regprocedure('"NEW_fn_seed_products"()') IS NOT NULL THEN
+        COMMENT ON FUNCTION "NEW_fn_seed_products"() IS
+            '[P1/2·Function] Seed hub NEW_products từ NEW_sp_order_items + NEW_ads_sp_asin_daily';
+    ELSE
+        RAISE NOTICE 'Bỏ qua (không tồn tại): NEW_fn_seed_products()';
     END IF;
 END $$;

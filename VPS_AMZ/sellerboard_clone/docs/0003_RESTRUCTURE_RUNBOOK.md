@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `Phase2_Transformation/sql/0003_entity_catalog_archive.sql` | Migration additive: `NEW_products` (catalog hub), `NEW_ad_portfolios/_ad_campaigns/_ad_groups/_ad_keywords` (entity tree), `NEW_raw_archive_log`, function `NEW_fn_seed_products()` |
-| `Phase2_Transformation/sql/0004_table_comments.sql` | (tùy chọn) Gắn nhãn `[Phase·nhóm·nguồn]` cho mọi bảng/view/function qua `COMMENT ON` — thay cho việc đổi tên (0 đụng code). Idempotent, tự bỏ qua object chưa có |
+| `Phase2_Transformation/sql/comment_schema.sql` | Gắn nhãn `[Phase·nhóm·nguồn]` qua `COMMENT ON` (idempotent). **Đã gộp** từ `0004_table_comments.sql` cũ vào file canonical của nhánh chính (đã chạy live); bổ sung 6 object entity-tree/catalog của 0003 + `NEW_fn_seed_products`. Chạy lại để gắn nhãn cho object mới |
 | `Phase1_Ingestion/raw_archive.py` | Đẩy raw payload → Cloudflare R2 (gzip JSON) trước khi NEW_* bị ghi đè; ghi `NEW_raw_archive_log`. Tắt mặc định, lỗi không chặn ingest |
 | `Phase1_Ingestion/amz_ads_client.py` | + `iter_sp_campaigns/ad_groups/keywords` (phân trang vnd v3) + `list_portfolios` (v2) |
 | `Phase1_Ingestion/direct_stream_pipeline.py` | + cờ `--entities` (gộp vào `--all`) → upsert `NEW_ad_*`; hook `raw_archive` cho mọi nguồn; `seed_products()` |
