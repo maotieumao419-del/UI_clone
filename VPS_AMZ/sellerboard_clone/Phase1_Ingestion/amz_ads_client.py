@@ -217,3 +217,79 @@ def download_report(url: str) -> list:
             return json.load(f)
     except Exception:                                  # noqa: BLE001 — không gzip
         return resp.json()
+
+
+# ── Entity listing (DIMENSION: portfolio → campaign → ad_group → keyword) ──────
+# Khác report (perf theo ngày): đây là HỒ SƠ hiện tại (state/budget/bid) để Khối E
+# sau này NHẮM hành động. SP v3 list endpoints cần Content-Type/Accept vnd riêng
+# + phân trang nextToken (≤ maxResults/trang). Portfolios dùng v2 (trả full list).
+
+# kind -> (path, content_type vnd, key trong response)
+SP_LIST_ENDPOINTS = {
+    "campaigns": ("/sp/campaigns/list", "application/vnd.spCampaign.v3+json", "campaigns"),
+    "adGroups":  ("/sp/adGroups/list",  "application/vnd.spAdGroup.v3+json",  "adGroups"),
+    "keywords":  ("/sp/keywords/list",  "application/vnd.spKeyword.v3+json",  "keywords"),
+}
+
+_LIST_STATE_FILTER = {"include": ["ENABLED", "PAUSED", "ARCHIVED"]}
+
+
+def _ads_post_typed(path, lwa_ads, body, content_type, retries=7):
+    """POST với Content-Type/Accept = vnd riêng (các endpoint /sp/.../list v3)."""
+    headers = _headers(lwa_ads)
+    headers["Content-Type"] = content_type
+    headers["Accept"] = content_type
+    for attempt in range(retries):
+        r = requests.post(f"{ADS_BASE}{path}", headers=headers,
+                          data=json.dumps(body), timeout=30)
+        if r.status_code == 429 and attempt < retries - 1:
+            wait = max(float(r.headers.get("Retry-After", 0) or 0), 5.0) + attempt * 5
+            print(f"    [ADS LIST] ⚠️  429 → đợi {wait:.0f}s (lần {attempt + 1})")
+            time.sleep(wait)
+            continue
+        if not r.ok:
+            print(f"    [ADS LIST] ❌ {r.status_code} {path}: {r.text[:300]}")
+        r.raise_for_status()
+        return r.json()
+    raise RuntimeError(f"Hết retry cho {path}")
+
+
+def _iter_sp_list(kind, lwa_ads, page_size=100):
+    """Generator phân trang cho /sp/{campaigns,adGroups,keywords}/list — yield TỪNG TRANG
+    (list ≤ page_size) để pipeline upsert + del + gc ngay (memory-safe)."""
+    path, content_type, key = SP_LIST_ENDPOINTS[kind]
+    next_token = None
+    while True:
+        body = {"maxResults": page_size, "stateFilter": _LIST_STATE_FILTER}
+        if next_token:
+            body["nextToken"] = next_token
+        resp = _ads_post_typed(path, lwa_ads, body, content_type)
+        items = resp.get(key, []) or []
+        if items:
+            yield items
+        next_token = resp.get("nextToken")
+        if not next_token:
+            break
+
+
+def iter_sp_campaigns(lwa_ads, page_size=100):
+    yield from _iter_sp_list("campaigns", lwa_ads, page_size)
+
+
+def iter_sp_ad_groups(lwa_ads, page_size=100):
+    yield from _iter_sp_list("adGroups", lwa_ads, page_size)
+
+
+def iter_sp_keywords(lwa_ads, page_size=100):
+    yield from _iter_sp_list("keywords", lwa_ads, page_size)
+
+
+def list_portfolios(lwa_ads):
+    """Portfolios (v2 /v2/portfolios/extended) — trả về full list, không phân trang.
+    Lỗi → trả [] (portfolio không bắt buộc; không chặn cây entity)."""
+    try:
+        data = ads_get("/v2/portfolios/extended", lwa_ads)
+        return data if isinstance(data, list) else []
+    except Exception as exc:                           # noqa: BLE001
+        print(f"  ⚠️  Không lấy được portfolios (bỏ qua): {exc}")
+        return []

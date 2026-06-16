@@ -30,6 +30,7 @@ credentials SP-API/Ads-API + SUPABASE_URL / SUPABASE_SERVICE_KEY.
 import argparse
 import gc
 import os
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 
@@ -38,6 +39,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import amz_ads_client as ads
 import amz_spapi_client as sp
+import raw_archive
 import _time_range as tr
 
 load_dotenv()
@@ -55,6 +57,15 @@ T_ADJ      = "NEW_fin_adjustments"
 T_ADS      = "NEW_ads_campaigns_daily"
 T_ADS_SKU  = "NEW_ads_sp_asin_daily"
 T_PRICE    = "NEW_product_price"   # persistent — KHÔNG bị --fresh xóa
+
+# Dimension mới (migration 0003) — cây hồ sơ ads + catalog hub. Đều persistent.
+T_DIM_PORTFOLIOS = "NEW_ad_portfolios"
+T_DIM_CAMPAIGNS  = "NEW_ad_campaigns"
+T_DIM_AD_GROUPS  = "NEW_ad_groups"
+T_DIM_KEYWORDS   = "NEW_ad_keywords"
+T_PRODUCTS       = "NEW_products"
+
+ASIN_RE = re.compile(r"B0[A-Z0-9]{8}")  # ASIN nhúng trong tên campaign (port từ call_API)
 
 
 def get_supabase_client():
@@ -378,6 +389,97 @@ def ingest_ads_sp_asin_report(client, data: list, report_date: str) -> int:
                           "report_date,campaign_id,ad_group_id,advertised_sku")
 
 
+# ── Sink: cây hồ sơ ads (DIMENSION — state/budget/bid hiện tại) ───────────────
+# Dedupe theo PK trong từng trang (tránh PostgREST 21000), upsert idempotent.
+
+def ingest_portfolios_page(client, portfolios: list) -> int:
+    now_iso = _now_iso()
+    rows = {}
+    for p in portfolios:
+        pid = str(p.get("portfolioId", "") or "")
+        if not pid:
+            continue
+        b = p.get("budget") or {}
+        rows[pid] = {
+            "portfolio_id":  pid,
+            "name":          p.get("name", ""),
+            "budget_amount": round(_float(b.get("amount")), 2) if b.get("amount") is not None else None,
+            "budget_policy": b.get("policy"),
+            "state":         p.get("state", ""),
+            "synced_at":     now_iso,
+        }
+    rows = list(rows.values())
+    return _upsert_chunks(client, T_DIM_PORTFOLIOS, rows, "portfolio_id") if rows else 0
+
+
+def ingest_campaigns_page(client, campaigns: list) -> int:
+    now_iso = _now_iso()
+    rows = {}
+    for c in campaigns:
+        cid = str(c.get("campaignId", "") or "")
+        if not cid:
+            continue
+        b = c.get("budget") or {}
+        db = c.get("dynamicBidding") or {}
+        name = c.get("name", "") or ""
+        m = ASIN_RE.search(name)
+        rows[cid] = {
+            "campaign_id":      cid,
+            "portfolio_id":     str(c.get("portfolioId")) if c.get("portfolioId") else None,
+            "name":             name,
+            "state":            c.get("state", ""),
+            "targeting_type":   c.get("targetingType"),
+            "budget_amount":    round(_float(b.get("budget")), 2) if b.get("budget") is not None else None,
+            "budget_type":      b.get("budgetType"),
+            "bidding_strategy": db.get("strategy"),
+            "advertised_asin":  m.group(0) if m else None,
+            "start_date":       c.get("startDate"),
+            "synced_at":        now_iso,
+        }
+    rows = list(rows.values())
+    return _upsert_chunks(client, T_DIM_CAMPAIGNS, rows, "campaign_id") if rows else 0
+
+
+def ingest_ad_groups_page(client, ad_groups: list) -> int:
+    now_iso = _now_iso()
+    rows = {}
+    for g in ad_groups:
+        gid = str(g.get("adGroupId", "") or "")
+        if not gid:
+            continue
+        rows[gid] = {
+            "ad_group_id": gid,
+            "campaign_id": str(g.get("campaignId", "") or ""),
+            "name":        g.get("name", ""),
+            "state":       g.get("state", ""),
+            "default_bid": round(_float(g.get("defaultBid")), 2) if g.get("defaultBid") is not None else None,
+            "synced_at":   now_iso,
+        }
+    rows = list(rows.values())
+    return _upsert_chunks(client, T_DIM_AD_GROUPS, rows, "ad_group_id") if rows else 0
+
+
+def ingest_keywords_page(client, keywords: list) -> int:
+    now_iso = _now_iso()
+    rows = {}
+    for k in keywords:
+        kid = str(k.get("keywordId", "") or "")
+        if not kid:
+            continue
+        rows[kid] = {
+            "keyword_id":   kid,
+            "ad_group_id":  str(k.get("adGroupId", "") or ""),
+            "campaign_id":  str(k.get("campaignId")) if k.get("campaignId") else None,
+            "keyword_text": k.get("keywordText", ""),
+            "match_type":   k.get("matchType"),
+            "state":        k.get("state", ""),
+            "bid":          round(_float(k.get("bid")), 2) if k.get("bid") is not None else None,
+            "synced_at":    now_iso,
+        }
+    rows = list(rows.values())
+    return _upsert_chunks(client, T_DIM_KEYWORDS, rows, "keyword_id") if rows else 0
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Orchestration: từng nguồn dữ liệu — fetch trang -> upsert -> del + gc.collect()
 # ══════════════════════════════════════════════════════════════════════════════
@@ -399,6 +501,7 @@ def run_orders(client, created_after: str, created_before: str = None) -> dict:
         totals["orders"] += result["orders"]
         totals["items"] += result["items"]
         print(f"    → Supabase: +{result['orders']} orders, +{result['items']} items")
+        raw_archive.archive("sp_orders", orders)   # bronze: lưu raw trước khi del
         del orders
         gc.collect()
     print(f"✅ Orders: {totals['orders']} orders, {totals['items']} items")
@@ -416,6 +519,7 @@ def run_finances(client, posted_after: str, posted_before: str = None) -> dict:
             totals[k] += result[k]
         print(f"    → Supabase: +{result['fees']} fees, +{result['refunds']} refunds, "
               f"+{result['adjustments']} adjustments")
+        raw_archive.archive("fin_events", events)   # bronze: lưu raw trước khi del
         del events
         gc.collect()
     print(f"✅ Finances: {totals}")
@@ -444,6 +548,7 @@ def _run_ads_one_day(client, lwa_ads, report_date: str) -> dict:
             continue
         data = ads.download_report(url)
         print(f"  [ADS] {name}: {len(data)} rows")
+        raw_archive.archive(f"ads_{name}", data, date=report_date)   # bronze
         if ad_product:
             n = ingest_ads_campaign_report(client, data, ad_product, report_date)
             print(f"    → Supabase {T_ADS}: +{n} rows")
@@ -468,6 +573,55 @@ def run_ads(client, report_dates) -> dict:
     return all_totals
 
 
+def run_entities(client) -> dict:
+    """Cây hồ sơ ads (DIMENSION): portfolios → campaigns → ad_groups → keywords.
+    Hồ sơ hiện tại (không theo ngày) → nền để Khối E NHẮM hành động về sau."""
+    print("\n=== ADS ENTITIES (dimension): portfolios → campaigns → ad_groups → keywords ===")
+    lwa_ads = ads.get_ads_token()
+    snap_day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    totals = {"portfolios": 0, "campaigns": 0, "ad_groups": 0, "keywords": 0}
+
+    portfolios = ads.list_portfolios(lwa_ads)
+    if portfolios:
+        totals["portfolios"] += ingest_portfolios_page(client, portfolios)
+        raw_archive.archive("ad_portfolios", portfolios, date=snap_day)
+    del portfolios
+    gc.collect()
+
+    for page in ads.iter_sp_campaigns(lwa_ads):
+        totals["campaigns"] += ingest_campaigns_page(client, page)
+        raw_archive.archive("ad_campaigns", page, date=snap_day)
+        del page
+        gc.collect()
+
+    for page in ads.iter_sp_ad_groups(lwa_ads):
+        totals["ad_groups"] += ingest_ad_groups_page(client, page)
+        raw_archive.archive("ad_groups", page, date=snap_day)
+        del page
+        gc.collect()
+
+    for page in ads.iter_sp_keywords(lwa_ads):
+        totals["keywords"] += ingest_keywords_page(client, page)
+        raw_archive.archive("ad_keywords", page, date=snap_day)
+        del page
+        gc.collect()
+
+    print(f"✅ Entities: {totals}")
+    return totals
+
+
+def seed_products(client) -> None:
+    """Seed Catalog hub NEW_products (asin↔sku) qua function SQL NEW_fn_seed_products()
+    — chạy DB-side (memory-safe). Non-blocking: lỗi RPC chỉ cảnh báo (function đã được
+    chạy 1 lần lúc áp migration 0003 nên hub vẫn có dữ liệu)."""
+    try:
+        client.rpc("NEW_fn_seed_products", {}).execute()
+        print("✅ NEW_products: seed hub (asin↔sku) xong.")
+    except Exception as exc:                           # noqa: BLE001
+        print(f"  ⚠️  Seed NEW_products qua RPC lỗi (bỏ qua): {exc}\n"
+              f"     → chạy tay trong Supabase SQL Editor: SELECT \"NEW_fn_seed_products\"();")
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ══════════════════════════════════════════════════════════════════════════════
@@ -477,7 +631,10 @@ def main() -> int:
     ap.add_argument("--orders",   action="store_true", help="Kéo Orders + Order Items")
     ap.add_argument("--finances", action="store_true", help="Kéo Financial Events")
     ap.add_argument("--ads",      action="store_true", help="Kéo 4 báo cáo quảng cáo")
-    ap.add_argument("--all",      action="store_true", help="Cả 3 nguồn")
+    ap.add_argument("--entities", action="store_true",
+                    help="Kéo cây hồ sơ ads (portfolios/campaigns/ad_groups/keywords) "
+                         "→ NEW_ad_* (dimension). Không cần --date (hồ sơ hiện tại).")
+    ap.add_argument("--all",      action="store_true", help="Cả 4 nguồn (orders+finances+ads+entities)")
     ap.add_argument("--date", help="Lấy đúng 1 NGÀY THEO GIỜ SELLER (Pacific/UTC-7, đặt qua "
                                    "SELLER_TIMEZONE) — vd 2026-06-09 = trọn ngày 09/06 giờ "
                                    "Seller Central. Tương đương --from X --to X.")
@@ -502,8 +659,9 @@ def main() -> int:
     do_orders = args.orders or args.all
     do_finances = args.finances or args.all
     do_ads = args.ads or args.all
-    if not (do_orders or do_finances or do_ads):
-        ap.error("Chọn ít nhất 1 nguồn: --orders / --finances / --ads / --all")
+    do_entities = args.entities or args.all
+    if not (do_orders or do_finances or do_ads or do_entities):
+        ap.error("Chọn ít nhất 1 nguồn: --orders / --finances / --ads / --entities / --all")
 
     now = datetime.now(timezone.utc)
     ads_dates = None
@@ -561,6 +719,11 @@ def main() -> int:
         run_finances(client, f_after, f_before)
     if do_ads:
         run_ads(client, ads_dates)
+    if do_entities:
+        run_entities(client)
+    # Catalog hub: seed asin↔sku sau khi đã có order_items / ads_sp_asin / entities
+    if do_orders or do_ads or do_entities:
+        seed_products(client)
     print("\n✅ Phase 1 hoàn tất — dữ liệu đã ở bảng đệm Supabase NEW_*.")
     
     # Trigger standalone post-processing cleanup and deduplication script
