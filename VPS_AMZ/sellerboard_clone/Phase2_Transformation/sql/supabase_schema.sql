@@ -411,6 +411,39 @@ COMMENT ON TABLE "NEW_summary_campaigns" IS
 
 
 -- ============================================================
+-- BẢNG 15: NEW_summary_reimbursements
+-- "Money Back" kiểu Sellerboard — gộp NEW_fin_adjustments (AdjustmentEventList
+-- của Finances API: WAREHOUSE_DAMAGE/WAREHOUSE_LOST/REVERSAL_REIMBURSEMENT/...)
+-- theo (adjustment_type, asin, sku) cho cả kỳ.
+--   category = 'reimbursement' (Amazon trả tiền cho hàng mất/hỏng tại kho FBA,
+--               amount DƯƠNG) | 'clawback' (Amazon thu hồi 1 khoản đã hoàn
+--               trước đó, amount ÂM).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS "NEW_summary_reimbursements" (
+    owner_id        INTEGER NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+    period_start    DATE NOT NULL,
+    period_end      DATE NOT NULL,
+    adjustment_type TEXT NOT NULL,
+    category        TEXT NOT NULL DEFAULT 'reimbursement',  -- reimbursement | clawback
+    product         TEXT,
+    asin            TEXT NOT NULL DEFAULT '',
+    sku             TEXT NOT NULL DEFAULT '',
+    quantity        INTEGER DEFAULT 0,
+    amount          NUMERIC(12,2) DEFAULT 0,    -- + = Amazon trả seller, - = thu hồi
+    updated_at      TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (owner_id, period_start, period_end, adjustment_type, asin, sku)
+);
+
+CREATE INDEX IF NOT EXISTS "idx_NEW_summary_reimbursements_period"
+    ON "NEW_summary_reimbursements" (period_start, period_end);
+CREATE INDEX IF NOT EXISTS "idx_NEW_summary_reimbursements_sku"
+    ON "NEW_summary_reimbursements" (sku);
+
+COMMENT ON TABLE "NEW_summary_reimbursements" IS
+    'Phase 2 — Money Back/Lost & Damaged (Sellerboard): tổng hợp NEW_fin_adjustments theo kỳ';
+
+
+-- ============================================================
 -- VIEW 1: NEW_v_order_items_csv
 -- Tái tạo cấu trúc file CSV "Order Items" của Sellerboard
 -- ============================================================

@@ -15,9 +15,10 @@ tồn tại trong schema để Dashboard render đúng ma trận, điền sau kh
 """
 from dataclasses import dataclass, field, fields
 
-T_SUMMARY_ITEMS     = "NEW_summary_order_items"
-T_SUMMARY_PRODUCTS  = "NEW_summary_products"
-T_SUMMARY_CAMPAIGNS = "NEW_summary_campaigns"
+T_SUMMARY_ITEMS         = "NEW_summary_order_items"
+T_SUMMARY_PRODUCTS      = "NEW_summary_products"
+T_SUMMARY_CAMPAIGNS     = "NEW_summary_campaigns"
+T_SUMMARY_REIMBURSEMENTS = "NEW_summary_reimbursements"
 
 ROLLUP_TOLERANCE = 0.01      # sai số làm tròn cho phép khi đối chiếu roll-up ($)
 
@@ -35,7 +36,12 @@ class SummaryOrderItem:
     sales:          float = 0.0
     promo:          float = 0.0     # số âm (giảm giá)
     sellable_quota: float | None = None     # chưa có nguồn API
-    refund_cost:    float = 0.0     # principal + commission + referral hoàn lại (âm)
+    refund_cost:    float = 0.0     # Mô hình Sellerboard: dòng return có
+        # sales/promo/amazon_fees/cost_of_goods/shipping = 0 (không "đảo dấu"
+        # vào Sales); toàn bộ tác động kinh tế của refund (hoàn principal (âm)
+        # + hoàn promo + hoàn referral fee - phạt admin + hoàn COGS nếu
+        # Sellable) dồn vào field này. gross_profit=0, net_profit=refund_cost
+        # cho dòng return.
     amazon_fees:    float = 0.0     # Referral + FBA Fulfillment (THẬT từ Finances API, âm)
     cost_of_goods:  float = 0.0     # COGS FIFO (âm)
     shipping:       float = 0.0     # âm
@@ -126,6 +132,27 @@ class SummaryCampaign:
     current_bid:   float | None = None      # chưa có nguồn API
     strategy:      str | None = None        # chưa có nguồn API
     automation_status: str | None = None    # chưa có nguồn API
+
+    def to_row(self) -> dict:
+        return {f.name: getattr(self, f.name) for f in fields(self)}
+
+
+@dataclass
+class SummaryReimbursement:
+    """1 dòng = 1 (adjustment_type, asin, sku) gộp trong kỳ — từ NEW_fin_adjustments
+    (AdjustmentEventList của Finances API). "Money Back" kiểu Sellerboard:
+    category='reimbursement' = Amazon trả tiền cho hàng mất/hỏng tại kho FBA
+    (amount DƯƠNG); category='clawback' = Amazon thu hồi lại 1 khoản đã hoàn
+    trước đó (amount ÂM)."""
+    period_start:    str = ""
+    period_end:      str = ""
+    adjustment_type: str = ""
+    category:        str = "reimbursement"   # reimbursement | clawback
+    product:         str = ""
+    asin:            str = ""
+    sku:             str = ""
+    quantity:        int = 0
+    amount:          float = 0.0
 
     def to_row(self) -> dict:
         return {f.name: getattr(self, f.name) for f in fields(self)}

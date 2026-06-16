@@ -46,8 +46,9 @@ from dotenv import load_dotenv
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config_cogs as cfg
 from aggregation_models import (T_SUMMARY_CAMPAIGNS, T_SUMMARY_ITEMS,
-                                T_SUMMARY_PRODUCTS, SummaryCampaign,
-                                SummaryOrderItem, SummaryProduct, validate_rollup)
+                                T_SUMMARY_PRODUCTS, T_SUMMARY_REIMBURSEMENTS,
+                                SummaryCampaign, SummaryOrderItem, SummaryProduct,
+                                SummaryReimbursement, validate_rollup)
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -56,6 +57,7 @@ T_ORDERS    = "NEW_sp_orders"
 T_ITEMS     = "NEW_sp_order_items"
 T_FEES      = "NEW_fin_item_fees"
 T_REFUNDS   = "NEW_fin_refunds"
+T_ADJUSTMENTS = "NEW_fin_adjustments"
 T_ADS       = "NEW_ads_campaigns_daily"
 T_ADS_SKU   = "NEW_ads_sp_asin_daily"
 T_FEE_CACHE = "NEW_fee_cache"
@@ -420,6 +422,75 @@ def _fetch_refunds(sb, start_utc, end_utc) -> list[dict]:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# 1b. Reimbursements / "Money Back" (AdjustmentEventList — NEW_fin_adjustments)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# AdjustmentType (Finances API) phổ biến ứng với reimbursement (Amazon TRẢ tiền
+# cho hàng mất/hỏng tại kho FBA) — amount DƯƠNG.
+_REIMBURSEMENT_TYPES = {
+    "WAREHOUSE_DAMAGE", "WAREHOUSE_LOST", "WAREHOUSE_THEFT",
+    "REVERSAL_REIMBURSEMENT", "FREE_REPLACEMENT_REFUND_ITEMS",
+    "MISSING_FROM_INBOUND", "FBAInventoryReimbursement",
+}
+# AdjustmentType ứng với clawback (Amazon THU HỒI 1 khoản đã hoàn trước đó)
+# — amount ÂM.
+_CLAWBACK_TYPES = {
+    "COMPENSATED_CLAWBACK", "REIMBURSEMENT_CLAWBACK", "ReimbursementClawback",
+}
+
+
+def _classify_adjustment(adj_type: str, amount: float) -> str:
+    """'reimbursement' (Amazon trả tiền cho hàng mất/hỏng tại kho FBA) hoặc
+    'clawback' (Amazon thu hồi 1 khoản đã hoàn trước đó). AdjustmentType lạ ->
+    suy theo dấu amount."""
+    if adj_type in _CLAWBACK_TYPES:
+        return "clawback"
+    if adj_type in _REIMBURSEMENT_TYPES:
+        return "reimbursement"
+    return "reimbursement" if amount >= 0 else "clawback"
+
+
+def _fetch_adjustments(sb, start_utc, end_utc) -> list[dict]:
+    """Adjustment events (Money Back: WAREHOUSE_DAMAGE/WAREHOUSE_LOST/...) trong
+    kỳ — gán theo posted_date."""
+    try:
+        return fetch_all(lambda: (
+            sb.table(T_ADJUSTMENTS)
+            .select("posted_date,adjustment_type,sku,asin,quantity,amount")
+            .gte("posted_date", start_utc.isoformat() + "Z")
+            .lte("posted_date", end_utc.isoformat() + "Z")
+        ))
+    except Exception as exc:                           # noqa: BLE001
+        logger.warning("[Adjustments] Không đọc được %s (%s) — bỏ qua.", T_ADJUSTMENTS, exc)
+        return []
+
+
+def _build_reimbursements(adjustments: list[dict], period_start: str, period_end: str,
+                          title_by_key: dict[tuple[str, str], str]) -> list[dict]:
+    """Gộp NEW_fin_adjustments theo (adjustment_type, asin, sku) cho cả kỳ ->
+    NEW_summary_reimbursements ("Money Back" / Lost & Damaged kiểu Sellerboard)."""
+    agg: dict[tuple[str, str, str], dict] = {}
+    for r in adjustments:
+        asin, sku = r.get("asin") or "", r.get("sku") or ""
+        adj_type = r.get("adjustment_type") or ""
+        a = agg.setdefault((adj_type, asin, sku), {"quantity": 0, "amount": 0.0})
+        a["quantity"] += int(r.get("quantity") or 0)
+        a["amount"] += _float(r.get("amount"))
+
+    rows = []
+    for (adj_type, asin, sku), a in agg.items():
+        amount = round(a["amount"], 2)
+        rows.append(SummaryReimbursement(
+            period_start=period_start, period_end=period_end,
+            adjustment_type=adj_type, category=_classify_adjustment(adj_type, amount),
+            product=title_by_key.get((asin, sku)) or sku or adj_type,
+            asin=asin, sku=sku, quantity=a["quantity"], amount=amount,
+        ).to_row())
+    rows.sort(key=lambda r: r["amount"], reverse=True)
+    return rows
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # 2. Ads: đọc theo kênh + phân bổ 3 tầng xuống từng SKU
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -665,7 +736,7 @@ def _aggregate_products(sb, item_rows: list[dict], period_start: str, period_end
         p.gross_profit = round(p.sales + p.promo + p.amazon_fees
                                + p.cost_of_goods + p.shipping, 2)
         p.net_profit = round(p.gross_profit + p.ads + p.refund_cost + p.expenses, 2)
-        p.estimated_payout = round(p.sales + p.promo + p.amazon_fees + p.refund_cost, 2)
+        p.estimated_payout = round(p.net_profit - p.cost_of_goods, 2)
         p.average_sales_price = round(p.sales / p.units, 2) if p.units else 0.0
         p.margin = round(p.net_profit / p.sales * 100, 2) if p.sales else None
         p.roi = round(p.net_profit / abs(p.cost_of_goods) * 100, 2) if p.cost_of_goods else None
@@ -697,6 +768,7 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
     price_map = _build_price_map(sb, items) if items else {}
     fees = _resolve_hybrid_fees(sb, items, order_status, price_map) if items else {}
     refunds = _fetch_refunds(sb, start_utc, end_utc)
+    adjustments = _fetch_adjustments(sb, start_utc, end_utc)
     cogs_map = cfg.load_cogs_map(sb)
 
     # ── Summary_Order_Items: dòng normal ─────────────────────────────────────
@@ -758,50 +830,55 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
 
     for (oid, asin, sku), agg in ref_agg.items():
         qty = agg["qty"]
-        
-        # 1. Đảo ngược Doanh thu (Sales & Promo)
-        sales = -abs(agg["refund_principal"])
-        promo = abs(agg["refund_promo"])  # DƯƠNG: Trả lại khoản tiền promo khách từng xài
-        
-        # 2. Xử lý Amazon Fees (Referral Refund + Admin Fee Penalty)
+
+        # 1. Hoàn Doanh thu (Sales & Promo) — KHÔNG ghi vào sales/promo của dòng
+        # return (mô hình Sellerboard: Sales chỉ phản ánh doanh số bán ra).
+        refund_principal = -abs(agg["refund_principal"])
+        refund_promo = abs(agg["refund_promo"])  # DƯƠNG: trả lại khoản promo khách từng xài
+
+        # 2. Amazon Fees hoàn lại (Referral Refund - Admin Fee Penalty)
         m = fee_cache.get(sku, {})
         rate = m.get("referral_rate") if m.get("referral_rate") is not None else DEFAULT_REFERRAL_RATE
-        
-        original_referral = abs(sales * rate)
+
+        original_referral = abs(refund_principal * rate)
         admin_fee = min(original_referral * 0.20, 5.00)  # Phạt 20% tối đa $5
         # Amazon trả lại tiền cho seller (+) sau khi đã trừ phạt
-        amazon_fees = round(original_referral - admin_fee, 2) 
-        
-        # 3. Xử lý Giá vốn (COGS) theo tình trạng nhập kho
+        refund_fees = round(original_referral - admin_fee, 2)
+
+        # 3. COGS hoàn lại theo tình trạng nhập kho
         try:
             ref_date = cfg.parse_iso(agg["date"] + "T00:00:00Z")
         except:
             ref_date = cfg.now_marketplace()
-        
+
         unit_cogs = abs(cfg.unit_cogs(cogs_map, sku, ref_date))
         if agg["disposition"].lower() == "sellable":
-            cost_of_goods = round(unit_cogs * qty, 2)  # (+) Hàng về kho an toàn, hoàn lại COGS
+            refund_cogs = round(unit_cogs * qty, 2)  # (+) Hàng về kho an toàn, hoàn lại COGS
         else:
-            cost_of_goods = 0.0  # Hỏng/Mất trắng -> KHÔNG HOÀN COGS (Chịu khoản lỗ gốc)
+            refund_cogs = 0.0  # Hỏng/Mất trắng -> KHÔNG HOÀN COGS (Chịu khoản lỗ gốc)
 
-        # 4. Chốt số PnL dòng Refund
-        shipping = 0.0
-        gross = round(sales + promo + amazon_fees + cost_of_goods + shipping, 2)
-        net = gross
-        
+        # 4. Dồn toàn bộ tác động kinh tế của refund vào refund_cost (mô hình
+        # Sellerboard): sales/promo/amazon_fees/cost_of_goods/shipping = 0,
+        # gross_profit = 0, net_profit = refund_cost.
+        refund_cost = round(refund_principal + refund_promo + refund_fees + refund_cogs, 2)
+
         item_rows.append(SummaryOrderItem(
             order_number=oid, order_date=agg["date"],
             product=title_by_key.get((asin, sku), f"Refund {sku}"), asin=asin, sku=sku,
             refunds=qty, units=0,  # units = 0 để không xô lệch doanh số bán ra
-            sales=sales, promo=promo,
-            amazon_fees=amazon_fees, cost_of_goods=cost_of_goods, shipping=shipping,
-            gross_profit=gross, net_profit=net, row_type="return",
+            sales=0.0, promo=0.0,
+            refund_cost=refund_cost,
+            amazon_fees=0.0, cost_of_goods=0.0, shipping=0.0,
+            gross_profit=0.0, net_profit=refund_cost, row_type="return",
             order_status="Refund", fee_state="ACTUAL_REFUND",
         ).to_row())
 
     # ── Summary_Products: gom theo (asin, sku) cho CẢ KỲ + phân bổ Ad Spend ──
     prod, product_rows = _aggregate_products(sb, item_rows, period_start, period_end, title_by_key)
     period_product_rows = product_rows                 # dùng cho totals/validate (1 dòng/kỳ)
+
+    # ── Summary_Reimbursements: "Money Back" / Lost & Damaged (Mart 4) ───────
+    reimbursement_rows = _build_reimbursements(adjustments, period_start, period_end, title_by_key)
 
     # ── Mart 3: Campaign Profitability (GPU per SKU từ Mart 2, cả kỳ) ────────
     campaign_rows = _build_campaigns(sb, prod, period_start, period_end)
@@ -875,11 +952,20 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
     totals["lines_actual"] = sum(1 for r in normal if r.get("fee_state") == "ACTUAL")
     totals["lines_estimated"] = sum(1 for r in normal if r.get("fee_state") == "ESTIMATED")
 
+    # ── "Money Back" / Lost & Damaged (Mart 4 — KHÔNG cộng vào net_profit,
+    # theo dõi riêng giống tab Reimbursements của Sellerboard) ──────────────
+    totals["reimbursements"] = round(sum(r["amount"] for r in reimbursement_rows), 2)
+    totals["reimbursements_received"] = round(sum(r["amount"] for r in reimbursement_rows
+                                                    if r["category"] == "reimbursement"), 2)
+    totals["reimbursements_clawback"] = round(sum(r["amount"] for r in reimbursement_rows
+                                                    if r["category"] == "clawback"), 2)
+
     return {
         "range": {"start": period_start, "end": period_end, "timezone": str(cfg.SELLER_TZ)},
         "item_rows": item_rows,
         "product_rows": product_rows,
         "campaign_rows": campaign_rows,    # Mart 3 — NEW_summary_campaigns
+        "reimbursement_rows": reimbursement_rows,  # Mart 4 — NEW_summary_reimbursements
         "daily_summary": daily_summary,    # ngày Pacific — nguồn cho chart Daily Sales
         "totals": totals,
         "warnings": warnings,
@@ -887,11 +973,11 @@ def transform(start_local: datetime, end_local: datetime, sb=None) -> dict:
 
 
 def truncate_summaries(sb) -> None:
-    """--fresh: xóa sạch 3 bảng Master TRƯỚC khi ghi (reset rồi nhét lại)."""
-    for table in (T_SUMMARY_ITEMS, T_SUMMARY_PRODUCTS, T_SUMMARY_CAMPAIGNS):
+    """--fresh: xóa sạch 4 bảng Master TRƯỚC khi ghi (reset rồi nhét lại)."""
+    for table in (T_SUMMARY_ITEMS, T_SUMMARY_PRODUCTS, T_SUMMARY_CAMPAIGNS, T_SUMMARY_REIMBURSEMENTS):
         sb.table(table).delete().gte("updated_at", "1900-01-01T00:00:00Z").execute()
     print(f"🧹 [--fresh] Đã xóa sạch {T_SUMMARY_ITEMS} + {T_SUMMARY_PRODUCTS} "
-          f"+ {T_SUMMARY_CAMPAIGNS}.")
+          f"+ {T_SUMMARY_CAMPAIGNS} + {T_SUMMARY_REIMBURSEMENTS}.")
 
 
 def _sanitize_record(rec: dict, now_iso: str, key_cols: set[str]) -> dict:
@@ -941,11 +1027,14 @@ def load_to_supabase_robust(rows, table_name: str, supabase_client,
 
 
 def write_summaries(sb, result: dict) -> dict:
-    """Upsert 3 bảng Master lên Supabase qua load_to_supabase_robust."""
-    # owner_id là 1 phần PRIMARY KEY của NEW_summary_order_items/NEW_summary_products
+    """Upsert 4 bảng Master lên Supabase qua load_to_supabase_robust."""
+    # owner_id là 1 phần PRIMARY KEY của NEW_summary_order_items/NEW_summary_products/
+    # NEW_summary_reimbursements
     for r in result["item_rows"]:
         r["owner_id"] = DEFAULT_OWNER_ID
     for r in result["product_rows"]:
+        r["owner_id"] = DEFAULT_OWNER_ID
+    for r in result["reimbursement_rows"]:
         r["owner_id"] = DEFAULT_OWNER_ID
     return {
         "items": load_to_supabase_robust(
@@ -957,6 +1046,9 @@ def write_summaries(sb, result: dict) -> dict:
         "campaigns": load_to_supabase_robust(
             result["campaign_rows"], T_SUMMARY_CAMPAIGNS, sb,
             "period_start,period_end,campaign_id"),
+        "reimbursements": load_to_supabase_robust(
+            result["reimbursement_rows"], T_SUMMARY_REIMBURSEMENTS, sb,
+            "owner_id,period_start,period_end,adjustment_type,asin,sku"),
     }
 
 
@@ -1037,6 +1129,17 @@ def main() -> int:
     print(f"  Cost of goods (tổng):  ${t.get('cost_of_goods', 0):>10,.2f}", file=sys.stderr)
     print(f"  Net profit (tổng):     ${t.get('net_profit', 0):>10,.2f}", file=sys.stderr)
     print(f"  Margin:                 {t.get('margin', 0):>9.2f}%", file=sys.stderr)
+
+    # ── "Money Back" / Lost & Damaged (Mart 4) ──
+    print("\n── MONEY BACK (Lost & Damaged / Reimbursements) ──", file=sys.stderr)
+    print(f"  Reimbursement nhận:    ${t.get('reimbursements_received', 0):>10,.2f}  "
+          f"({sum(1 for r in result['reimbursement_rows'] if r['category'] == 'reimbursement')} dòng)",
+          file=sys.stderr)
+    print(f"  Clawback bị thu hồi:   ${t.get('reimbursements_clawback', 0):>10,.2f}  "
+          f"({sum(1 for r in result['reimbursement_rows'] if r['category'] == 'clawback')} dòng)",
+          file=sys.stderr)
+    print(f"  Net:                   ${t.get('reimbursements', 0):>10,.2f}", file=sys.stderr)
+
     if result["warnings"]:
         print(f"⚠️  {len(result['warnings'])} cảnh báo roll-up (xem log).", file=sys.stderr)
 
@@ -1049,7 +1152,8 @@ def main() -> int:
         written = write_summaries(sb, result)
         print(f"✅ Đã ghi Supabase: {written['items']} dòng {T_SUMMARY_ITEMS}, "
               f"{written['products']} dòng {T_SUMMARY_PRODUCTS}, "
-              f"{written['campaigns']} dòng {T_SUMMARY_CAMPAIGNS}", file=sys.stderr)
+              f"{written['campaigns']} dòng {T_SUMMARY_CAMPAIGNS}, "
+              f"{written['reimbursements']} dòng {T_SUMMARY_REIMBURSEMENTS}", file=sys.stderr)
     return 0
 
 
