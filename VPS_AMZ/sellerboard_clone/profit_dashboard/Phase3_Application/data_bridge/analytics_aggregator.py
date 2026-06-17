@@ -1,13 +1,13 @@
-"""Phase 3 — Aggregator cho Dashboard (đọc 100% từ SQLite/Postgres local qua SQLAlchemy).
+﻿"""Phase 3 — Aggregator cho Dashboard (đọc 100% từ SQLite/Postgres local qua SQLAlchemy).
 
 Cung cấp các hàm dùng cho route GET /api/analytics/dashboard/summary:
   get_dashboard_kpis(db, owner_id, start_date, end_date, compare_start, compare_end)
       -> Thẻ KPI (Sales/Net Profit/Units/Refunds/Fees/Ads/COGS) cho kỳ hiện tại (CP)
          và kỳ so sánh (PP), kèm delta_pct chuẩn hoá theo "Daily Average Normalization".
   get_sku_performance(db, owner_id, start_date, end_date)
-      -> Bảng "Products": GROUP BY (asin, sku) từ NEW_summary_products.
+      -> Bảng "Products": GROUP BY (asin, sku) từ Profit_Phase2_summary_products.
   get_order_items_details(db, owner_id, start_date, end_date)
-      -> Bảng "Orders": ledger giao dịch thô từ NEW_summary_order_items.
+      -> Bảng "Orders": ledger giao dịch thô từ Profit_Phase2_summary_order_items.
 
 KHÔNG còn bất kỳ lệnh gọi Supabase nào trong module này — toàn bộ dữ liệu đã
 được đồng bộ về DB cục bộ qua Phase3_Application/data_bridge/supabase_to_app_db.py.
@@ -74,7 +74,7 @@ def calculate_trend(cp_val: float, pp_val: float, cp_days: int, pp_days: int) ->
 # ══════════════════════════════════════════════════════════════════════════════
 def get_dashboard_kpis(db, owner_id: int, start_date, end_date,
                        compare_start=None, compare_end=None) -> dict:
-    """Tổng SUM(Sales/Net Profit/Units/Refunds/Fees/Ads/COGS) từ NEW_summary_products
+    """Tổng SUM(Sales/Net Profit/Units/Refunds/Fees/Ads/COGS) từ Profit_Phase2_summary_products
     (chỉ các bản ghi NGÀY: period_start == period_end) cho kỳ hiện tại (CP) và kỳ
     so sánh (PP). Nếu không truyền compare_start/compare_end, PP = khoảng liền
     trước CP, cùng số ngày."""
@@ -166,24 +166,11 @@ def _product_lookup(db, owner_id: int) -> dict:
             for r in rows}
 
 
-def _image_lookup(db) -> dict:
-    """{asin: image_url} từ Profit_Phase1_product_images (pipeline ảnh mới, SP-API
-    Catalog Items). Raw SQL để KHÔNG cần model ORM. Bảng chưa tồn tại -> {}."""
-    from sqlalchemy import text
-    try:
-        rows = db.execute(text(
-            'SELECT asin, image_url FROM "Profit_Phase1_product_images"'
-        )).all()
-        return {r[0]: r[1] for r in rows if r[0] and r[1]}
-    except Exception:                                    # noqa: BLE001 — bảng chưa có
-        return {}
-
-
 # ══════════════════════════════════════════════════════════════════════════════
 # B3. get_sku_performance — bảng "Products" (GROUP BY asin, sku)
 # ══════════════════════════════════════════════════════════════════════════════
 def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
-    """SUM(NEW_summary_products) GROUP BY (asin, sku) cho khoảng [start_date, end_date]
+    """SUM(Profit_Phase2_summary_products) GROUP BY (asin, sku) cho khoảng [start_date, end_date]
     (chỉ các bản ghi NGÀY: period_start == period_end). Trả về list dict lồng nhau
     (product_info / metrics / detailed_pnl) cho tab Products — kiến trúc 8-Level."""
     from sqlalchemy import func, select
@@ -220,7 +207,6 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
     ).all()
 
     products = _product_lookup(db, owner_id)
-    images = _image_lookup(db)
 
     out: list[dict] = []
     for r in rows:
@@ -233,9 +219,6 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
         refund_cost = round(float(r.refund_cost or 0.0), 2)
         amazon_fees = round(float(r.amazon_fees or 0.0), 2)
         shipping = round(float(r.shipping or 0.0), 2)
-        gross_profit = round(float(r.gross_profit or 0.0), 2)
-        estimated_payout = round(float(r.estimated_payout or 0.0), 2)
-        refunds = int(r.refunds or 0)
 
         info = products.get((r.asin, r.sku), {})
 
@@ -245,9 +228,7 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
                 "asin": r.asin,
                 "sku": r.sku,
                 "title": r.product or r.sku,
-                # Ưu tiên ảnh từ pipeline mới (Profit_Phase1_product_images theo asin),
-                # fallback ảnh cũ ở bảng products.
-                "image_url": images.get(r.asin) or info.get("image_url"),
+                "image_url": info.get("image_url"),
                 # SellerVision hiện chỉ quản lý tồn kho FBA (Product.current_stock từ
                 # SP-API Inventory) -> nhãn cố định, không có nguồn dữ liệu FBM riêng.
                 "fulfillment_channel": "FBA",
@@ -255,23 +236,15 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
             },
             "metrics": {
                 "units": units,
-                "refunds": refunds,
+                "refunds": int(r.refunds or 0),
                 "sales": round(sales, 2),
                 "cogs": round(cogs, 2),
-                "promo": promo,
                 "ads": ads,
                 "amazon_fees": amazon_fees,
-                "gross_profit": gross_profit,
                 "net_profit": round(net_profit, 2),
-                "estimated_payout": estimated_payout,
                 "average_sales_price": round(sales / units, 2) if units else 0.0,
-                # Margin/ROI/Real ACOS: 2 chữ số thập phân (khớp Sellerboard)
-                "margin_pct": round(net_profit / sales * 100, 2) if sales else 0.0,
-                "roi_pct": round(net_profit / abs(cogs) * 100, 2) if cogs else 0.0,
-                "real_acos": round(abs(ads) / sales * 100, 2) if sales else 0.0,
-                # % Refunds: units=0 & có refund -> None (Sellerboard hiện '∞')
-                "refunds_pct": (round(refunds / units * 100, 2) if units
-                                else (None if refunds else 0.0)),
+                "margin_pct": round(net_profit / sales * 100, 1) if sales else 0.0,
+                "roi_pct": round(net_profit / abs(cogs) * 100, 1) if cogs else 0.0,
                 "bsr": r.bsr,
             },
             "detailed_pnl": {
@@ -292,7 +265,7 @@ def get_sku_performance(db, owner_id: int, start_date, end_date) -> list[dict]:
 # C. get_order_items_details — bảng "Orders" (ledger thô, không group)
 # ══════════════════════════════════════════════════════════════════════════════
 def get_order_items_details(db, owner_id: int, start_date, end_date) -> list[dict]:
-    """NEW_summary_order_items trong khoảng [start_date, end_date], mới nhất trước,
+    """Profit_Phase2_summary_order_items trong khoảng [start_date, end_date], mới nhất trước,
     tối đa 1000 dòng — cho tab Order Items. Mỗi dòng kèm `order_number_raw`
     (chuỗi ghép Order ID / Trạng thái / COG / FBA) để Mức 8 parse hiển thị."""
     from sqlalchemy import select
@@ -309,14 +282,12 @@ def get_order_items_details(db, owner_id: int, start_date, end_date) -> list[dic
         .limit(1000)
     ).all()
 
-    images = _image_lookup(db)
     out: list[dict] = []
     for row in rows:
         d = row.to_dict()
         status = row.order_status or "Pending"
         d["order_number_raw"] = f"{row.order_number} / {status} / COG: {row.cost_of_goods:g} / FBA"
         d["order_date"] = row.order_date.strftime("%d.%m.%Y") if row.order_date else None
-        d["image_url"] = images.get(row.asin)
         out.append(d)
     return out
 

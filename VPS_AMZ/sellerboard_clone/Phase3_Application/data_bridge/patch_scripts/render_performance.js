@@ -44,7 +44,7 @@
   function pnl(v, isPercent) {
     var n = Number(v) || 0;
     var sign = n > 0 ? '+' : (n < 0 ? '-' : '');
-    var body = isPercent ? Math.abs(n).toFixed(1) + '%' : fmtMoney(Math.abs(n));
+    var body = isPercent ? Math.abs(n).toFixed(2) + '%' : fmtMoney(Math.abs(n));
     var cls = n > 0 ? 'text-green-600 font-semibold'
             : n < 0 ? 'text-red-600 font-semibold'
             : 'text-slate-400';
@@ -400,7 +400,19 @@
     }
     row = list.find(function (p) { return p.identifier === identifier; });
     if (!row) return;
-    showPopover(evt, row.detailed_pnl, row.identifier + ' — P&L');
+    var m = row.metrics || {};
+    // Bổ sung Gross profit + Est. payout vào cây P&L (khớp cột Sellerboard)
+    var tree = Object.assign({}, row.detailed_pnl);
+    if (m.gross_profit !== undefined) tree.gross_profit = { total: m.gross_profit };
+    if (m.estimated_payout !== undefined) tree.est_payout = { total: m.estimated_payout };
+    // Tỉ lệ per-SKU: Margin / ROI / Real ACOS / % Refunds (trước đây chỉ có ở thẻ kỳ)
+    var extraRows = [
+      { label: 'Margin', value: m.margin_pct, isPercent: true },
+      { label: 'ROI', value: m.roi_pct, isPercent: true },
+      { label: 'Real ACOS', value: m.real_acos, isPercent: true },
+      { label: '% Refunds', value: m.refunds_pct, isPercent: true },
+    ];
+    showPopover(evt, tree, row.identifier + ' — P&L', extraRows);
   };
 
   function splitAmazonFees(sales, amazonFees) {
@@ -622,13 +634,18 @@
       : 'bg-yellow-100 text-yellow-700';
 
     var identifier = order.order_number + '|' + order.sku;
+    // Ảnh sản phẩm (pipeline mới: order.image_url theo asin; fallback widget Amazon)
+    var oinfo = { title: order.product, sku: order.sku, asin: order.asin, image_url: order.image_url };
     var main = '<tr class="border-b hover:bg-slate-50">' +
-      '<td class="py-2 px-2">' +
-        '<button type="button" class="text-gray-400 hover:text-gray-800 w-4 mr-1" onclick="SV8.toggleSubRow(\'' + rowId + '\')" id="toggle-' + rowId + '">▸</button>' +
-        '<span class="font-mono text-blue-600">' + esc(orderId) + '</span>' +
-        '<div class="text-xs text-gray-500 ml-5">' + esc(order.order_date) + '</div>' +
-        '<span class="px-2 py-0.5 rounded text-[10px] font-bold ml-5 ' + badgeClass + '">' + esc(status) + '</span>' +
-      '</td>' +
+      '<td class="py-2 px-2"><div class="flex items-center gap-2">' +
+        '<button type="button" class="text-gray-400 hover:text-gray-800 w-4" onclick="SV8.toggleSubRow(\'' + rowId + '\')" id="toggle-' + rowId + '">▸</button>' +
+        thumb(oinfo) +
+        '<div class="min-w-0">' +
+          '<span class="font-mono text-blue-600">' + esc(orderId) + '</span>' +
+          '<div class="text-xs text-gray-500">' + esc(order.order_date) + '</div>' +
+          '<span class="px-2 py-0.5 rounded text-[10px] font-bold ' + badgeClass + '">' + esc(status) + '</span>' +
+        '</div>' +
+      '</div></td>' +
       '<td class="text-right px-2">' + badge(order.sku, 'SKU') + '<div class="text-[10px] text-slate-400 mt-0.5">' + esc(order.asin) + '</div></td>' +
       '<td class="text-right px-2">' + fmtMoney(order.sales) + '</td>' +
       '<td class="text-right px-2">' + pnl(order.net_profit) + '</td>' +

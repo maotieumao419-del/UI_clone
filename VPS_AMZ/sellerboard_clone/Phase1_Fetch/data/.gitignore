@@ -1,0 +1,6 @@
+# Không commit raw data files lên git (có thể rất lớn)
+*.gz
+*.jsonl
+*.json
+# Giữ lại cấu trúc thư mục
+!.gitignore

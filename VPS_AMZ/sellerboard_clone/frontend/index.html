@@ -44,6 +44,7 @@
         <a onclick="App.go('alerts')" data-page="alerts" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🔔 Cảnh báo <span id="alert-badge" class="hidden ml-auto bg-red-500 text-white text-xs px-1.5 rounded-full"></span></a>
         <a onclick="App.go('reimburse')" data-page="reimburse" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">💰 Bồi thường</a>
         <a onclick="App.go('ppc')" data-page="ppc" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🎯 PPC_LHHKMT</a>
+        <a onclick="App.go('ppcdash')" data-page="ppcdash" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">📊 PPC Dashboard</a>
         <a onclick="App.go('ads')" data-page="ads" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">📣 Amazon Ads</a>
         <a onclick="App.go('ethics')" data-page="ethics" class="nav-item flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-50">🛡️ Quyền riêng tư</a>
       </nav>
@@ -112,6 +113,7 @@
         <section id="page-bsr" class="hidden space-y-4"><div id="ltv-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div><div class="bg-white rounded-xl p-5 shadow-sm"><h3 class="font-semibold mb-3">Theo dõi BSR</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Sản phẩm</th><th class="text-right">BSR hiện tại</th><th class="text-right">TB tuần</th><th class="text-right">TB tháng</th><th class="text-right">vs Tuần</th><th class="text-right">vs Tháng</th></tr></thead><tbody id="bsr-rows"></tbody></table></div></div></section>
         <section id="page-alerts" class="hidden"><div class="flex justify-end mb-3"><button onclick="App.scanAlerts()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700">🔍 Quét listing ngay</button></div><div id="alert-list" class="space-y-2"></div></section>
         <section id="page-reimburse" class="hidden"><div class="flex justify-end mb-3"><button onclick="App.scanReimburse()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700">↻ Quét hồ sơ bồi thường</button></div><div class="bg-white rounded-xl p-5 shadow-sm"><table class="w-full text-sm"><thead class="text-slate-500 border-b"><tr class="text-left"><th class="py-2">Sản phẩm</th><th>Lý do</th><th class="text-right">SL</th><th class="text-right">Ước tính ($)</th><th>Trạng thái</th><th>Ngày</th></tr></thead><tbody id="reimburse-rows"></tbody></table></div></section>
+        <section id="page-ppcdash" class="hidden"></section>
         <section id="page-ppc" class="hidden">
           <div class="flex flex-wrap items-center gap-3 mb-4">
             <label class="text-sm text-slate-600">🏬 Store: <select id="ppc-store-select" onchange="App.ppcChangeStore()" class="text-sm border border-slate-300 rounded-lg px-2 py-1.5 ml-1"></select></label>
@@ -168,5 +170,6 @@
   </style>
   <script src="/static/app.js"></script>
   <script src="/static/render_performance.js"></script>
+  <script src="/static/ppc_dashboard.js"></script>
 </body>
 </html>
